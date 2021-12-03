@@ -1,5 +1,13 @@
-var http = require('http');
-var app = require('./app');
+const path = require('path');
+const http = require('http');
+const express = require('express');
+//const socketIO = require('socket.io');
 
-http.createServer(app.handleRequest).listen(4000);
+const publicPath = path.join(__dirname, './public');
+const port = process.env.PORT || 3000;
 
+var app = express();
+app.use(express.static(publicPath));
+app.listen(port, ()=>{
+    console.log(`Server running on Port ${port}...`);
+})

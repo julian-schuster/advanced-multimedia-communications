@@ -17,6 +17,29 @@ io.on('connection', (socket) =>{
     socket.on('disconnect', () =>{
         console.log("User was disconnected");
     });
+
+    socket.emit('newMessage', {
+            from: "Website",
+            text: "Welcome to Jam.io",
+            createdAt: new Date().getTime()
+        
+    });
+
+    socket.broadcast.emit('newMessage', {
+        from: "Website",
+        text: "New User joined",
+        createdAt: new Date().getTime()
+    
+    });
+
+    socket.on('createMessage', (message) => {
+        console.log("createMessage", message);
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        })     
+    });
 });
 
 server.listen(port, ()=>{

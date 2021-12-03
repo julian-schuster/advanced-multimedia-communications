@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+const {generateMessage} = require('./modules/message');
 const publicPath = path.join(__dirname, './public');
 const port = process.env.PORT || 3000;
 let app = express();
@@ -18,27 +19,18 @@ io.on('connection', (socket) =>{
         console.log("User was disconnected");
     });
 
-    socket.emit('newMessage', {
-            from: "Website",
-            text: "Welcome to Jam.io",
-            createdAt: new Date().getTime()
-        
-    });
+    //Welcome Message to new User
+    socket.emit('newMessage', generateMessage("server", "Welcome to Jam.io"));
 
-    socket.broadcast.emit('newMessage', {
-        from: "Website",
-        text: "New User joined",
-        createdAt: new Date().getTime()
-    
-    });
+    //Message to all other Users that a new User joined
+    socket.broadcast.emit('newMessage', generateMessage("server", "New User Joined"));
 
-    socket.on('createMessage', (message) => {
+
+    //Message from User(Client), broadcasted to all users
+    socket.on('createMessage', (message, callback) => {
         console.log("createMessage", message);
-        io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        })     
+        io.emit('newMessage', generateMessage(message.from, message.text));  
+        callback("This is Server");   
     });
 });
 

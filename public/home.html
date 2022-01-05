@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-
+        <link rel="stylesheet" href="style/styles.css">
     </head>
     <body>
         <h1>Index</h1>
@@ -9,7 +9,31 @@
             <input id="message-input" type="text" name="message">
             <button id="submit-btn" type="submit">Sent</button>
         </form>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/script/chat.js"></script>
+
+        <div>
+        <ul id="keyboard">
+            <li note="C" class="white">A</li>
+            <li note="C#" class="black">W</li>
+            <li note="D" class="white offset">S</li>
+            <li note="D#" class="black">E</li>
+            <li note="E" class="white offset">D</li>
+            <li note="F" class="white">F</li>
+            <li note="F#" class="black">T</li>
+            <li note="G" class="white offset">G</li>
+            <li note="G#" class="black">Y</li>
+            <li note="A" class="white offset">H</li>
+            <li note="A#" class="black">U</li>
+            <li note="B" class="white offset">J</li>
+            <li note="C2" class="white">K</li>
+            <li note="C#2" class="black">O</li>
+            <li note="D2" class="white offset">L</li>
+            <li note="D#2" class="black">P</li>
+            <li note="E2" class="white offset">;</li>
+          </ul>
+        </div>
+            <script src="/socket.io/socket.io.js"></script>
+            <script src="/script/chat.js"></script>
+            <script src="/script/keyboard.js"></script>
+
     </body>
 </html>

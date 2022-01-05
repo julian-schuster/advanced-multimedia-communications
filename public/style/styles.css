@@ -1,4 +1,14 @@
 #keyboard {
+  height: 15.25rem;
+  width: 41rem;
+  margin: 0.5rem auto;
+  padding: 3rem 0 0 3rem;
+  position: relative;
+  border: 1px solid var(--keyboard-border);
+  border-radius: 1rem;
+  background-color: var(--keyboard);
+  box-shadow: 0 0 50px var(--black-50) inset, 0 1px var(--keyboard-shadow) inset,
+    0 5px 15px var(--black-50);
   --keyboard: hsl(300, 100%, 16%);
   --keyboard-shadow: hsla(19, 50%, 66%, 0.2);
   --keyboard-border: hsl(20, 91%, 5%);
@@ -82,15 +92,13 @@
   margin: 0 0 0 -1rem;
 }
 
-#keyboard {
-  height: 15.25rem;
-  width: 41rem;
-  margin: 0.5rem auto;
-  padding: 3rem 0 0 3rem;
-  position: relative;
-  border: 1px solid var(--keyboard-border);
-  border-radius: 1rem;
-  background-color: var(--keyboard);
-  box-shadow: 0 0 50px var(--black-50) inset, 0 1px var(--keyboard-shadow) inset,
-    0 5px 15px var(--black-50);
+audio{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#recordButtons{
+ text-align: center;
+ margin-top: 10px;
 }

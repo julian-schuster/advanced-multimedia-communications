@@ -82,7 +82,7 @@ const pressedNotes = new Map();
 let clickedKey = "";
 
 const playKey = (key) => {
-    mediaRecorder.start();
+  
   if (!keys[key]) {
     return;
   }
@@ -132,10 +132,11 @@ const playKey = (key) => {
   keys[key].element.classList.add("pressed");
   pressedNotes.set(key, osc);
   pressedNotes.get(key).start();
+  
 };
 
 const stopKey = (key) => {
-    
+  
   if (!keys[key]) {
     return;
   }
@@ -146,17 +147,13 @@ const stopKey = (key) => {
   if (osc) {
     setTimeout(() => {
       osc.stop();
-       mediaRecorder.stop();
     }, 2000);
-
     pressedNotes.delete(key);
-  }
+  } 
 
- 
 };
 
 document.addEventListener("keydown", (e) => {
-    
   const eventKey = e.key.toUpperCase();
   const key = eventKey === ";" ? "semicolon" : eventKey;
   
@@ -167,7 +164,6 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("keyup", (e) => {
-    
   const eventKey = e.key.toUpperCase();
   const key = eventKey === ";" ? "semicolon" : eventKey;
   
@@ -192,10 +188,23 @@ mediaRecorder.ondataavailable = function(evt) {
     // push each chunk (blobs) in an array
     chunks.push(evt.data);
     console.log(evt.data);
+    
   };
 
-  mediaRecorder.onstop = function(evt) {
+mediaRecorder.onstop = function(evt) {
     // Make blob out of our blobs, and open it.
-    var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+    var blob = new Blob(chunks, { 'type' : 'audio/mp3; codecs=opus' });
     document.querySelector("audio").src = URL.createObjectURL(blob);
-  };
+};
+
+function startRecording(){
+  if(mediaRecorder.state != "recording"){
+    mediaRecorder.start();
+  }
+}
+
+function stopRecording(){
+  if(mediaRecorder.state == "recording"){
+    mediaRecorder.stop();
+  }
+}

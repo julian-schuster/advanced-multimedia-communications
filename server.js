@@ -32,6 +32,11 @@ io.on('connection', (socket) =>{
         io.emit('newMessage', generateMessage(message.from, message.text));  
         callback("This is Server");   
     });
+
+    socket.on('radio', function(blob) {
+        // can choose to broadcast it to whoever you want
+        socket.broadcast.emit('sound', blob);
+    });
 });
 
 server.listen(port, ()=>{

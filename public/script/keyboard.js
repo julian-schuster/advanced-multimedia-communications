@@ -1,8 +1,9 @@
 const audioContext = new AudioContext();
-
   
 var dest = audioContext.createMediaStreamDestination();
+
 mediaRecorder = new MediaRecorder(dest.stream);
+
 var chunks = [];
 
 const getElementByNote = (note) => note && document.querySelector(`[note="${note}"]`);
@@ -184,19 +185,6 @@ document.addEventListener("mouseup", () => {
   stopKey(clickedKey);
 });
 
-mediaRecorder.ondataavailable = function(evt) {
-    // push each chunk (blobs) in an array
-    chunks.push(evt.data);
-    console.log(evt.data);
-    
-  };
-
-mediaRecorder.onstop = function(evt) {
-    // Make blob out of our blobs, and open it.
-    var blob = new Blob(chunks, { 'type' : 'audio/mp3; codecs=opus' });
-    document.querySelector("audio").src = URL.createObjectURL(blob);
-};
-
 function startRecording(){
   if(mediaRecorder.state != "recording"){
     mediaRecorder.start();
@@ -208,3 +196,24 @@ function stopRecording(){
     mediaRecorder.stop();
   }
 }
+
+//var constraints = { audio: true };
+
+mediaRecorder.ondataavailable = function(evt) {
+  // push each chunk (blobs) in an array
+  chunks.push(evt.data);
+};
+  
+mediaRecorder.onstop = function(evt) {
+  // Make blob out of our blobs, and open it.
+  var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+  socket.emit('radio', blob);
+};
+
+// When the client receives a voice message it will play the sound
+socket.on('sound', function(arrayBuffer) {
+  var blob = new Blob([arrayBuffer], { 'type' : 'audio/ogg; codecs=opus' });
+  var audio = document.createElement('audio');
+  audio.src = window.URL.createObjectURL(blob);
+  audio.play();
+});

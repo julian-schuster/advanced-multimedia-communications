@@ -1,7 +1,11 @@
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const audioContext = new AudioContext();
 
-const getElementByNote = (note) =>
-  note && document.querySelector(`[note="${note}"]`);
+  
+var dest = audioContext.createMediaStreamDestination();
+mediaRecorder = new MediaRecorder(dest.stream);
+var chunks = [];
+
+const getElementByNote = (note) => note && document.querySelector(`[note="${note}"]`);
 
 const keys = {
   A: { element: getElementByNote("C"), note: "C", octaveOffset: 0 },
@@ -78,14 +82,16 @@ const pressedNotes = new Map();
 let clickedKey = "";
 
 const playKey = (key) => {
+    mediaRecorder.start();
   if (!keys[key]) {
     return;
   }
 
   const osc = audioContext.createOscillator();
+
   const noteGainNode = audioContext.createGain();
   noteGainNode.connect(audioContext.destination);
-
+  
   const zeroGain = 0.00001;
   const maxGain = 0.5;
   const sustainedGain = 0.001;
@@ -113,6 +119,8 @@ const playKey = (key) => {
   setRelease();
 
   osc.connect(noteGainNode);
+  noteGainNode.connect(dest);
+
   osc.type = "triangle";
 
   const freq = getHz(keys[key].note, (keys[key].octaveOffset || 0) + 3);
@@ -127,6 +135,7 @@ const playKey = (key) => {
 };
 
 const stopKey = (key) => {
+    
   if (!keys[key]) {
     return;
   }
@@ -137,13 +146,17 @@ const stopKey = (key) => {
   if (osc) {
     setTimeout(() => {
       osc.stop();
+       mediaRecorder.stop();
     }, 2000);
 
     pressedNotes.delete(key);
   }
+
+ 
 };
 
 document.addEventListener("keydown", (e) => {
+    
   const eventKey = e.key.toUpperCase();
   const key = eventKey === ";" ? "semicolon" : eventKey;
   
@@ -154,6 +167,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("keyup", (e) => {
+    
   const eventKey = e.key.toUpperCase();
   const key = eventKey === ";" ? "semicolon" : eventKey;
   
@@ -173,3 +187,15 @@ for (const [key, { element }] of Object.entries(keys)) {
 document.addEventListener("mouseup", () => {
   stopKey(clickedKey);
 });
+
+mediaRecorder.ondataavailable = function(evt) {
+    // push each chunk (blobs) in an array
+    chunks.push(evt.data);
+    console.log(evt.data);
+  };
+
+  mediaRecorder.onstop = function(evt) {
+    // Make blob out of our blobs, and open it.
+    var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+    document.querySelector("audio").src = URL.createObjectURL(blob);
+  };

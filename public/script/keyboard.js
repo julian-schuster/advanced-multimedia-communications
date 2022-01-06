@@ -197,6 +197,7 @@ navigator.mediaDevices.getUserMedia(constraints).then(async function () {
     var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
     chunks.pop();
     socket.emit('keyboard', blob);
+    socket.emit('keypressed', clickedKey);
    }
   };
 
@@ -204,7 +205,7 @@ navigator.mediaDevices.getUserMedia(constraints).then(async function () {
     // Start recording
     mediaRecorder.start();
     // Wait
-    await sleep(500);
+    await sleep(1000);
     // Stop recording
     mediaRecorder.stop();
   
@@ -230,6 +231,15 @@ socket.on('sound', function(arrayBuffer) {
   var audio = document.createElement('audio');
   audio.src = window.URL.createObjectURL(blob);
   audio.play();
+});
+
+// When the client receives a key it will trigger the key
+socket.on('key', function(clickedKey) {
+  keys[clickedKey].element.classList.add("pressed");
+
+  setTimeout(() => {
+    keys[clickedKey].element.classList.remove("pressed");
+  }, 500);
 });
 
 

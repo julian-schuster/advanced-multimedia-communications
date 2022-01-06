@@ -25,7 +25,6 @@ io.on('connection', (socket) =>{
     //Message to all other Users that a new User joined
     socket.broadcast.emit('newMessage', generateMessage("server", "New User Joined"));
 
-
     //Message from User(Client), broadcasted to all users
     socket.on('createMessage', (message, callback) => {
         console.log("createMessage", message);
@@ -36,6 +35,10 @@ io.on('connection', (socket) =>{
     socket.on('keyboard', function(blob) {
         // can choose to broadcast it to whoever you want
         socket.broadcast.emit('sound', blob);
+    });
+
+    socket.on('keypressed', (pressedKey) => {
+        socket.broadcast.emit('key', pressedKey);
     });
 });
 

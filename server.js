@@ -33,7 +33,7 @@ io.on('connection', (socket) =>{
         callback("This is Server");   
     });
 
-    socket.on('radio', function(blob) {
+    socket.on('keyboard', function(blob) {
         // can choose to broadcast it to whoever you want
         socket.broadcast.emit('sound', blob);
     });

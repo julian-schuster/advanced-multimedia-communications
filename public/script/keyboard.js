@@ -1,3 +1,4 @@
+window.onload = function() {
 const audioContext = new AudioContext();
   
 var dest = audioContext.createMediaStreamDestination();
@@ -185,6 +186,32 @@ document.addEventListener("mouseup", () => {
   stopKey(clickedKey);
 });
 
+const sleep = time => new Promise(resolve => setTimeout(resolve, time));
+var constraints = { audio: true };
+navigator.mediaDevices.getUserMedia(constraints).then(async function () {
+
+  mediaRecorder.ondataavailable = function(evt) {
+    // push each chunk (blobs) in an array
+   if(evt.data.size != 0){
+    chunks.push(evt.data);
+    var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+    chunks.pop();
+    socket.emit('keyboard', blob);
+   }
+  };
+
+  while(true){
+    // Start recording
+    mediaRecorder.start();
+    // Wait
+    await sleep(500);
+    // Stop recording
+    mediaRecorder.stop();
+  
+  }
+
+});
+
 function startRecording(){
   if(mediaRecorder.state != "recording"){
     mediaRecorder.start();
@@ -197,23 +224,13 @@ function stopRecording(){
   }
 }
 
-//var constraints = { audio: true };
-
-mediaRecorder.ondataavailable = function(evt) {
-  // push each chunk (blobs) in an array
-  chunks.push(evt.data);
-};
-  
-mediaRecorder.onstop = function(evt) {
-  // Make blob out of our blobs, and open it.
-  var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
-  socket.emit('radio', blob);
-};
-
-// When the client receives a voice message it will play the sound
+// When the client receives a audio it will play the sound
 socket.on('sound', function(arrayBuffer) {
   var blob = new Blob([arrayBuffer], { 'type' : 'audio/ogg; codecs=opus' });
   var audio = document.createElement('audio');
   audio.src = window.URL.createObjectURL(blob);
   audio.play();
 });
+
+
+}

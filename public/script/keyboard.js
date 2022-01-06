@@ -1,4 +1,4 @@
-window.onload = function() {
+
 const audioContext = new AudioContext();
   
 var dest = audioContext.createMediaStreamDestination();
@@ -84,8 +84,11 @@ const pressedNotes = new Map();
 let clickedKey = "";
 
 const playKey = (key) => {
-
-  mediaRecorder.start();
+  if(mediaRecorder.state == "recording"){
+    mediaRecorder.stop();
+  } else {
+    mediaRecorder.start();
+  }
   
   if (!keys[key]) {
     return;
@@ -151,14 +154,9 @@ const stopKey = (key) => {
   if (osc) {
     setTimeout(() => {
       osc.stop();
-      
-    }, 2000);
-    pressedNotes.delete(key);
-    setTimeout(() => {
       mediaRecorder.stop();
-      
-    }, 500);
-  
+    }, 300);
+    pressedNotes.delete(key);
   } 
 
 };
@@ -207,25 +205,9 @@ document.addEventListener("mouseup", () => {
    
   };
 
-function startRecording(){
-  if(mediaRecorder.state != "recording"){
-    mediaRecorder.start();
-  }
-}
-
-function stopRecording(){
-  if(mediaRecorder.state == "recording"){
-    mediaRecorder.stop();
-  }
-}
-
 // When the client receives a audio it will play the sound
 socket.on('sound', function(arrayBuffer) {
   var blob = new Blob([arrayBuffer], { 'type' : 'audio/ogg; codecs=opus' });
- // var audio = document.createElement('audio');
- // audio.src = window.URL.createObjectURL(blob);
- // audio.play();
-
   var audio = new Audio(window.URL.createObjectURL(blob));
   audio.play();
 });
@@ -233,11 +215,7 @@ socket.on('sound', function(arrayBuffer) {
 // When the client receives a key it will trigger the key
 socket.on('key', function(clickedKey) {
   keys[clickedKey].element.classList.add("pressed");
-
   setTimeout(() => {
     keys[clickedKey].element.classList.remove("pressed");
   }, 500);
 });
-
-
-}

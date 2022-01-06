@@ -154,7 +154,9 @@ const stopKey = (key) => {
   if (osc) {
     setTimeout(() => {
       osc.stop();
-      mediaRecorder.stop();
+      if(mediaRecorder.state == "recording" || mediaRecorder.state != "inactive"){
+        mediaRecorder.stop();
+      }
     }, 300);
     pressedNotes.delete(key);
   } 
@@ -195,10 +197,9 @@ document.addEventListener("mouseup", () => {
 
   mediaRecorder.ondataavailable = function(evt) {
     // push each chunk (blobs) in an array
-  
     chunks.push(evt.data);
     console.log(evt.data);
-    var blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+    let blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
     chunks.pop();
     socket.emit('keyboard', blob);
     socket.emit('keypressed', clickedKey);
@@ -207,7 +208,7 @@ document.addEventListener("mouseup", () => {
 
 // When the client receives a audio it will play the sound
 socket.on('sound', function(arrayBuffer) {
-  var blob = new Blob([arrayBuffer], { 'type' : 'audio/ogg; codecs=opus' });
+  let blob = new Blob([arrayBuffer], { 'type' : 'audio/ogg; codecs=opus' });
   var audio = new Audio(window.URL.createObjectURL(blob));
   audio.play();
 });

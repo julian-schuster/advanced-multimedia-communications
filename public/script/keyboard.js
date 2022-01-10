@@ -84,14 +84,15 @@ const pressedNotes = new Map();
 let clickedKey = "";
 
 const playKey = (key) => {
+
+  if (!keys[key]) {
+    return;
+  }
+
   if(mediaRecorder.state == "recording"){
     mediaRecorder.stop();
   } else {
     mediaRecorder.start();
-  }
-  
-  if (!keys[key]) {
-    return;
   }
 
   const osc = audioContext.createOscillator();
@@ -152,15 +153,14 @@ const stopKey = (key) => {
   const osc = pressedNotes.get(key);
 
   if (osc) {
-    setTimeout(() => {
-      osc.stop();
-      if(mediaRecorder.state == "recording" || mediaRecorder.state != "inactive"){
-        mediaRecorder.stop();
-      }
-    }, 300);
+    
+    osc.stop();
+    if(mediaRecorder.state == "recording" || mediaRecorder.state != "inactive"){
+      mediaRecorder.stop();
+    }
+  
     pressedNotes.delete(key);
   } 
-
 };
 
 document.addEventListener("keydown", (e) => {
@@ -170,6 +170,7 @@ document.addEventListener("keydown", (e) => {
   if (!key || pressedNotes.get(key)) {
     return;
   }
+
   playKey(key);
   clickedKey = key;
 });
@@ -195,16 +196,24 @@ document.addEventListener("mouseup", () => {
   stopKey(clickedKey);
 });
 
-  mediaRecorder.ondataavailable = function(evt) {
-    // push each chunk (blobs) in an array
-    chunks.push(evt.data);
-    console.log(evt.data);
+mediaRecorder.ondataavailable = function(evt) {
+  // push each chunk (blobs) in an array
+   chunks.push(evt.data);
+};
+
+mediaRecorder.onstop = function(e) {
+  setTimeout(() => {
     let blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
     chunks.pop();
-    socket.emit('keyboard', blob);
-    socket.emit('keypressed', clickedKey);
-   
-  };
+ 
+    if(blob.size > 0){
+      socket.emit('keyboard', blob);
+      socket.emit('keypressed', clickedKey);
+    }
+  }, 10);
+
+ 
+};
 
 // When the client receives a audio it will play the sound
 socket.on('sound', function(arrayBuffer) {
@@ -215,8 +224,15 @@ socket.on('sound', function(arrayBuffer) {
 
 // When the client receives a key it will trigger the key
 socket.on('key', function(clickedKey) {
+
+  if (!keys[clickedKey]) {
+    return;
+  }
+
   keys[clickedKey].element.classList.add("pressed");
+
   setTimeout(() => {
     keys[clickedKey].element.classList.remove("pressed");
-  }, 500);
+  }, 200);
+
 });

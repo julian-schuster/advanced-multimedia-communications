@@ -6,6 +6,7 @@ var dest = audioContext.createMediaStreamDestination();
 mediaRecorder = new MediaRecorder(dest.stream);
 
 var chunks = [];
+var recording = false;
 
 const getElementByNote = (note) => note && document.querySelector(`[note="${note}"]`);
 
@@ -89,10 +90,12 @@ const playKey = (key) => {
     return;
   }
 
-  if(mediaRecorder.state == "recording"){
-    mediaRecorder.stop();
-  } else {
-    mediaRecorder.start();
+  if(!recording){
+    if(mediaRecorder.state == "recording"){
+      mediaRecorder.stop();
+    } else {
+      mediaRecorder.start();
+    }
   }
 
   const osc = audioContext.createOscillator();
@@ -155,7 +158,7 @@ const stopKey = (key) => {
   if (osc) {
     
     osc.stop();
-    if(mediaRecorder.state == "recording" || mediaRecorder.state != "inactive"){
+    if(((mediaRecorder.state == "recording" || mediaRecorder.state != "inactive") && !recording)){
       mediaRecorder.stop();
     }
   
@@ -198,22 +201,45 @@ document.addEventListener("mouseup", () => {
 
 mediaRecorder.ondataavailable = function(evt) {
   // push each chunk (blobs) in an array
-   chunks.push(evt.data);
+  chunks.push(evt.data);
+  let blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+
+  chunks.pop();
+
+  document.querySelector("audio").src = URL.createObjectURL(blob);
+  
+  if(blob.size > 0){
+    socket.emit('keyboard', blob);
+    socket.emit('keypressed', clickedKey);
+  }
 };
 
-mediaRecorder.onstop = function(e) {
-  setTimeout(() => {
-    let blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
-    chunks.pop();
- 
-    if(blob.size > 0){
-      socket.emit('keyboard', blob);
-      socket.emit('keypressed', clickedKey);
-    }
-  }, 10);
 
+function startRecording(){
+  
+  if(mediaRecorder.state == "recording"){
+    mediaRecorder.stop();
+    mediaRecorder.start();
+  } else {
+    recording = true;
+    mediaRecorder.start();
+    
+    console.log("started Recording");
+  }
+
+}
+
+function stopRecording(){
  
-};
+  if(mediaRecorder.state == "recording"){
+    
+    mediaRecorder.stop();
+    chunks = [];
+    recording = false; 
+    console.log("stopped Recording");
+  }
+  
+}
 
 // When the client receives a audio it will play the sound
 socket.on('sound', function(arrayBuffer) {

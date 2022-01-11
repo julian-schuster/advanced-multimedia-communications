@@ -32,16 +32,72 @@
           </ul>
         </div>
 
+   
         <audio controls></audio>
 
         <div id="recordingButtons">
             <input type="button" value="start recording" onclick="startRecording()">
             <input type="button" value="stop recording" onclick="stopRecording()">
         </div>
+
+        <div id="drums">
+            <div class="parent-key">
+                <div data-key=65 class="key">
+                    <div>A</div>
+                    <span>Clap</span>
+                </div>
+                <div data-key=83 class="key">
+                    <div>S</div>
+                    <span>hihat</span>
+                </div>
+                <div data-key=68 class="key">
+                    <div>D</div>
+                    <span>kick</span>
+                </div>
+                <div data-key=70 class="key">
+                    <div>F</div>
+                    <span>openhat</span>
+                </div>
+                <div data-key=71 class="key">
+                    <div>G</div>
+                    <span>boom</span>
+                </div>
+                <div data-key=72 class="key">
+                    <div>H</div>
+                    <span>ride</span>
+                </div>
+                <div data-key=74 class="key">
+                    <div>J</div>
+                    <span>snare</span>
+                </div>
+                <div data-key=75 class="key">
+                    <div>K</div>
+                    <span>tom</span>
+                </div>
+                <div data-key=76 class="key">
+                    <div>L</div>
+                    <span>tink</span>
+                </div>
+    
+            </div>
+
+            <audio data-key=65 src="sounds/virtual-drum_sounds_boom.wav"></audio>
+            <audio data-key=83 src="sounds/virtual-drum_sounds_clap.wav" ></audio>
+            <audio data-key=68 src="sounds/virtual-drum_sounds_hihat.wav" ></audio>
+            <audio data-key=70 src="sounds/virtual-drum_sounds_kick.wav" ></audio>
+            <audio data-key=71 src="sounds/virtual-drum_sounds_openhat.wav" ></audio>
+            <audio data-key=72 src="sounds/virtual-drum_sounds_ride.wav" ></audio>
+            <audio data-key=74 src="sounds/virtual-drum_sounds_snare.wav" ></audio>
+            <audio data-key=75 src="sounds/virtual-drum_sounds_tink.wav" ></audio>
+            <audio data-key=76 src="sounds/virtual-drum_sounds_tom.wav" ></audio>
+    
+        </div>
+
     </body>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/script/chat.js"></script>
     <script src="/script/keyboard.js"></script>
-    
+    <script src="/script/drums.js"></script>
+
 </html>

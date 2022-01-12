@@ -7,9 +7,18 @@
         <h1>Index</h1>
         <form id="message-form">
             <input id="message-input" type="text" name="message">
-            <button id="submit-btn" type="submit">Sent</button>
+            <button id="submit-btn" type="submit" >Sent</button>
         </form>
 
+        <div id="audioControls">
+            <audio controls></audio>
+
+            <div id="recordingButtons">
+                <input type="button" value="start recording" onclick="startRecording()">
+                <input type="button" value="stop recording" onclick="stopRecording()">
+            </div>
+        </div>
+        
         <div class="instruments">
 
         <div id="keyboardFrame" tabindex="0">
@@ -32,13 +41,6 @@
                 <li note="D#2" class="black">P</li>
                 <li note="E2" class="white offset">;</li>
             </ul>
-        
-            <audio controls></audio>
-
-            <div id="recordingButtons">
-                <input type="button" value="start recording" onclick="startRecording()">
-                <input type="button" value="stop recording" onclick="stopRecording()">
-            </div>
 
         </div>
 
@@ -83,9 +85,7 @@
                     </div>
                 </div>
         </div>
-
-  
-
+        
             <audio data-key=71 src="sounds/virtual-drum_sounds_boom.wav"></audio>
             <audio data-key=65 src="sounds/virtual-drum_sounds_clap.wav" ></audio>
             <audio data-key=83 src="sounds/virtual-drum_sounds_hihat.wav" ></audio>
@@ -97,6 +97,7 @@
             <audio data-key=75 src="sounds/virtual-drum_sounds_tom.wav" ></audio>
     
         </div>
+
 
     </body>
 

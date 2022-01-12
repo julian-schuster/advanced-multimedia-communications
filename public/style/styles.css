@@ -98,11 +98,12 @@ audio{
   display: block;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 10px;
 }
 
 #recordingButtons{
  text-align: center;
- margin-top: 10px;
+ margin-bottom: 10px;
 }
 
 .parent-key {
@@ -148,6 +149,22 @@ div:focus {
   margin-left: auto;
   margin-right: auto;
   
+}
+
+#drumkitFrame{
+  width: 49%;
+  display: inline-block;
+   vertical-align: top;
+}
+
+#keyboardFrame{
+  width: 50%;
+  display: inline-block; 
+  vertical-align: top;
+}
+
+#instruments{
+  text-align: center;
 }
 
 #drumA{

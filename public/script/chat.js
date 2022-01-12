@@ -29,3 +29,8 @@ document.querySelector('#submit-btn').addEventListener('click', function(e){
     });
 });
 
+document.getElementById('message-form').onclick = function () {
+    activateDrums = false;
+    activateKeyboard = false;
+  };
+

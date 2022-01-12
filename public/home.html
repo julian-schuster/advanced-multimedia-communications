@@ -10,37 +10,37 @@
             <button id="submit-btn" type="submit">Sent</button>
         </form>
 
-        <div>
-        <ul id="keyboard">
-            <li note="C" class="white">A</li>
-            <li note="C#" class="black">W</li>
-            <li note="D" class="white offset">S</li>
-            <li note="D#" class="black">E</li>
-            <li note="E" class="white offset">D</li>
-            <li note="F" class="white">F</li>
-            <li note="F#" class="black">T</li>
-            <li note="G" class="white offset">G</li>
-            <li note="G#" class="black">Y</li>
-            <li note="A" class="white offset">H</li>
-            <li note="A#" class="black">U</li>
-            <li note="B" class="white offset">J</li>
-            <li note="C2" class="white">K</li>
-            <li note="C#2" class="black">O</li>
-            <li note="D2" class="white offset">L</li>
-            <li note="D#2" class="black">P</li>
-            <li note="E2" class="white offset">;</li>
-          </ul>
+        <div id="keyboardFrame" tabindex="0">
+            <ul id="keyboard">
+                <li note="C" class="white">A</li>
+                <li note="C#" class="black">W</li>
+                <li note="D" class="white offset">S</li>
+                <li note="D#" class="black">E</li>
+                <li note="E" class="white offset">D</li>
+                <li note="F" class="white">F</li>
+                <li note="F#" class="black">T</li>
+                <li note="G" class="white offset">G</li>
+                <li note="G#" class="black">Y</li>
+                <li note="A" class="white offset">H</li>
+                <li note="A#" class="black">U</li>
+                <li note="B" class="white offset">J</li>
+                <li note="C2" class="white">K</li>
+                <li note="C#2" class="black">O</li>
+                <li note="D2" class="white offset">L</li>
+                <li note="D#2" class="black">P</li>
+                <li note="E2" class="white offset">;</li>
+            </ul>
+        
+            <audio controls></audio>
+
+            <div id="recordingButtons">
+                <input type="button" value="start recording" onclick="startRecording()">
+                <input type="button" value="stop recording" onclick="stopRecording()">
+            </div>
+
         </div>
 
-   
-        <audio controls></audio>
-
-        <div id="recordingButtons">
-            <input type="button" value="start recording" onclick="startRecording()">
-            <input type="button" value="stop recording" onclick="stopRecording()">
-        </div>
-
-        <div id="drums">
+        <div id="drums" tabindex="0">
             <div class="parent-key">
                 <div data-key=65 class="key">
                     <div>A</div>

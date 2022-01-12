@@ -212,7 +212,6 @@ document.addEventListener("mouseup", () => {
 });
 
 mediaRecorder.onstop = function(evt) {
-  console.log(evt);
   let blob = new Blob(chunks, { 'type' : 'audio/wav' });
 
   chunks.pop();
@@ -229,9 +228,8 @@ mediaRecorder.onstop = function(evt) {
 
 mediaRecorder.ondataavailable = function(evt) {
   chunks.push(evt.data);
-  console.log(evt.data);
-
   }
+
 function startRecording(){
   
   if(mediaRecorder.state == "recording"){

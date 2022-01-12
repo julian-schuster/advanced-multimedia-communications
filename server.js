@@ -46,6 +46,11 @@ io.on('connection', (socket) =>{
        
         socket.broadcast.emit('key', pressedKey);
     });
+
+    socket.on('keypressedDrums', (clickedKeyDrums) => {
+       
+        socket.broadcast.emit('keyDrums', clickedKeyDrums);
+    });
 });
 
 server.listen(port, ()=>{

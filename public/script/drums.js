@@ -1,6 +1,6 @@
 const drumsFrame = document.getElementById('drums');
 var activateDrums = false;
-
+var clickedKeyDrums = "";
 const getElementByDataId = (datakey) => datakey && document.querySelector(`[data-key="${datakey}"]`);
 
 const keysDrums = {
@@ -26,13 +26,14 @@ window.addEventListener('keydown',function(e){
         if(!document.querySelector(`audio[data-key="${e.keyCode}"]`)){
             return;
         }
-        
-       
+      
         let audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
         let key = document.querySelector(`.key[data-key="${e.keyCode}"]`)
         audio.currentTime = 0;
         audio.play();
         key.classList.add('playing');
+
+        clickedKeyDrums = key.querySelector('div').innerHTML;
 
         let aud = audio;
 
@@ -40,9 +41,8 @@ window.addEventListener('keydown',function(e){
           method: "GET"
         }).then((response) => {
           response.blob().then(function (blob) {
-
-              console.log(blob);
               socket.emit('drums', blob);
+              socket.emit('keypressedDrums', clickedKeyDrums);
              });
            });
     }
@@ -53,8 +53,6 @@ let keypressed = document.querySelectorAll('.key');
 keypressed.forEach((key)=>{
     key.addEventListener('transitionend',function(){
         this.classList.remove('playing');
-
-
     })
 
 })
@@ -99,13 +97,14 @@ for (const [key, { element }] of Object.entries(keysDrums)) {
             return;
         }
   
-        
         let audio = document.querySelector(`audio[data-key="${keyCode}"]`);
         let key = document.querySelector(`.key[data-key="${keyCode}"]`)
         audio.currentTime = 0;
         audio.play();
         key.classList.add('playing');
-        
+
+        clickedKeyDrums = key.querySelector('div').innerHTML;
+
         let aud = audio;
 
         fetch(aud.src, {
@@ -115,6 +114,7 @@ for (const [key, { element }] of Object.entries(keysDrums)) {
 
               console.log(blob);
               socket.emit('drums', blob);
+              socket.emit('keypressedDrums', clickedKeyDrums);
              });
            });
 
@@ -127,4 +127,46 @@ socket.on('drumSound', function(arrayBuffer) {
     let blob = new Blob([arrayBuffer], { 'type' : 'audio/wav; codecs=opus' });
     var audio = new Audio(window.URL.createObjectURL(blob));
     audio.play();
+    
   });
+
+// When the client receives a audio it will play the sound
+socket.on('keyDrums', function(clickedKeyDrums) {
+
+  switch (clickedKeyDrums) {
+    case "A":
+      keyCode = 65;
+      break;
+    case "S":
+      keyCode = 83;
+      break;
+    case "D":
+      keyCode = 68;
+      break;
+    case "F":
+      keyCode = 70;
+      break;
+    case "G":
+      keyCode = 71;
+      break;
+    case "H":
+      keyCode = 72;
+      break;
+    case "J":
+      keyCode = 74;
+      break;
+    case "K":
+      keyCode = 75;
+      break;
+    case "L":
+      keyCode = 76;
+      break;
+    default:
+      return;
+  }
+
+  let key = document.querySelector(`.key[data-key="${keyCode}"]`)
+
+  key.classList.add('playing');
+
+});

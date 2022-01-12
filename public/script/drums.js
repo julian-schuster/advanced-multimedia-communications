@@ -17,7 +17,7 @@ const keysDrums = {
   };
 
 
-document.getElementById('drums').onclick = function () {
+document.getElementById('drumkitFrame').onclick = function () {
     activateKeyboard = false;
     activateDrums = true;
 };

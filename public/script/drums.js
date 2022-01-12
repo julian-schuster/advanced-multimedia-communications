@@ -33,14 +33,8 @@ window.addEventListener('keydown',function(e){
         audio.currentTime = 0;
         audio.play();
         key.classList.add('playing');
-        let aud = document.getElementById('sound_boom');
-        /*fetch(aud.src)
-        .then(response => response.blob())
-        .then(console.log);
-          */
-       
-       // 
 
+        let aud = audio;
 
         fetch(aud.src, {
           method: "GET"
@@ -111,15 +105,8 @@ for (const [key, { element }] of Object.entries(keysDrums)) {
         audio.currentTime = 0;
         audio.play();
         key.classList.add('playing');
-
-        let aud = document.getElementById('sound_boom');
-        /*fetch(aud.src)
-        .then(response => response.blob())
-        .then(console.log);
-          */
-       
-       // 
-
+        
+        let aud = audio;
 
         fetch(aud.src, {
           method: "GET"

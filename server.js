@@ -37,6 +37,11 @@ io.on('connection', (socket) =>{
         socket.broadcast.emit('sound', blob);
     });
 
+    socket.on('drums', function(blob) {
+        // can choose to broadcast it to whoever you want
+        socket.broadcast.emit('drumSound', blob);
+    });
+
     socket.on('keypressed', (pressedKey) => {
        
         socket.broadcast.emit('key', pressedKey);

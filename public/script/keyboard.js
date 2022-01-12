@@ -206,13 +206,14 @@ for (const [key, { element }] of Object.entries(keysKeyboard)) {
 }
 
 document.addEventListener("mouseup", () => {
-  stopKey(clickedKey);
+  if(activateKeyboard){
+    stopKey(clickedKey);
+  }
 });
 
-mediaRecorder.ondataavailable = function(evt) {
-  // push each chunk (blobs) in an array
-  chunks.push(evt.data);
-  let blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+mediaRecorder.onstop = function(evt) {
+  console.log(evt);
+  let blob = new Blob(chunks, { 'type' : 'audio/wav' });
 
   chunks.pop();
 
@@ -221,10 +222,16 @@ mediaRecorder.ondataavailable = function(evt) {
   if(blob.size > 0){
     socket.emit('keyboard', blob);
     socket.emit('keypressed', clickedKey);
-  }
 };
 
 
+};
+
+mediaRecorder.ondataavailable = function(evt) {
+  chunks.push(evt.data);
+  console.log(evt.data);
+
+  }
 function startRecording(){
   
   if(mediaRecorder.state == "recording"){

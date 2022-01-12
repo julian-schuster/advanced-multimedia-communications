@@ -1,4 +1,3 @@
-
 const drumsFrame = document.getElementById('drums');
 var activateDrums = false;
 
@@ -16,7 +15,6 @@ const keysDrums = {
     L: { element: getElementByDataId("76")}
   };
 
-
 document.getElementById('drumkitFrame').onclick = function () {
     activateKeyboard = false;
     activateDrums = true;
@@ -24,14 +22,26 @@ document.getElementById('drumkitFrame').onclick = function () {
 
 window.addEventListener('keydown',function(e){
     if(activateDrums){
+
         if(!document.querySelector(`audio[data-key="${e.keyCode}"]`)){
             return;
         }
+        
+        if(!recording){
+            if(mediaRecorder.state == "recording"){
+                mediaRecorder.stop();
+            } else {
+                mediaRecorder.start();
+                console.log("mediaRecorder started");
+            }
+          }
+       
         let audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
         let key = document.querySelector(`.key[data-key="${e.keyCode}"]`)
         audio.currentTime = 0;
         audio.play();
         key.classList.add('playing');
+
     }
 })
     
@@ -40,10 +50,16 @@ let keypressed = document.querySelectorAll('.key');
 keypressed.forEach((key)=>{
     key.addEventListener('transitionend',function(){
         this.classList.remove('playing');
+        
+        if(((mediaRecorder.state == "recording" || mediaRecorder.state != "inactive") && !recording)){
+            mediaRecorder.stop();
+            console.log("mediaRecorder stopped");
+          }
+
     })
+
 })
     
-
 for (const [key, { element }] of Object.entries(keysDrums)) {
 
     element.addEventListener("mousedown", (e) => {
@@ -83,21 +99,26 @@ for (const [key, { element }] of Object.entries(keysDrums)) {
         if(!document.querySelector(`audio[data-key="${keyCode}"]`)){
             return;
         }
-
+        if(!recording){
+            if(mediaRecorder.state == "recording"){
+                mediaRecorder.stop();
+            } else {
+                mediaRecorder.start();
+            }
+          }
+        
         let audio = document.querySelector(`audio[data-key="${keyCode}"]`);
         let key = document.querySelector(`.key[data-key="${keyCode}"]`)
         audio.currentTime = 0;
         audio.play();
         key.classList.add('playing');
+      
     });
   }
-  
-  document.addEventListener("mouseup", (e) => {
-      
-    keypressed.forEach((key)=>{
-        key.addEventListener('transitionend',function(){
-            this.classList.remove('playing');
-        })
-    })
-  });
 
+  // When the client receives a audio it will play the sound
+socket.on('drumSound', function(arrayBuffer) {
+    let blob = new Blob([arrayBuffer], { 'type' : 'audio/ogg; codecs=opus' });
+    var audio = new Audio(window.URL.createObjectURL(blob));
+    audio.play();
+  });

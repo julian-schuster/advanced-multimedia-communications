@@ -3,7 +3,9 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./modules/message');
+const {
+    generateMessage
+} = require('./modules/message');
 const publicPath = path.join(__dirname, './public');
 const port = process.env.PORT || 3000;
 let app = express();
@@ -12,10 +14,10 @@ let io = socketIO(server);
 
 app.use(express.static(publicPath));
 
-io.on('connection', (socket) =>{
+io.on('connection', (socket) => {
     console.log("new User connected");
 
-    socket.on('disconnect', () =>{
+    socket.on('disconnect', () => {
         console.log("User was disconnected");
     });
 
@@ -28,31 +30,31 @@ io.on('connection', (socket) =>{
     //Message from User(Client), broadcasted to all users
     socket.on('createMessage', (message, callback) => {
         console.log("createMessage", message);
-        io.emit('newMessage', generateMessage(message.from, message.text));  
-        callback("This is Server");   
+        io.emit('newMessage', generateMessage(message.from, message.text));
+        callback("This is Server");
     });
 
-    socket.on('keyboard', function(blob) {
+    socket.on('keyboard', function (blob) {
         // can choose to broadcast it to whoever you want
-        socket.broadcast.emit('sound', blob);
+        socket.broadcast.emit('keyboardSound', blob);
     });
 
-    socket.on('drums', function(blob) {
+    socket.on('drums', function (blob) {
         // can choose to broadcast it to whoever you want
         socket.broadcast.emit('drumSound', blob);
     });
 
-    socket.on('keypressed', (pressedKey) => {
-       
-        socket.broadcast.emit('key', pressedKey);
+    socket.on('keypressedKeyboard', (clickedKeyKeyboard) => {
+
+        socket.broadcast.emit('keyboardKey', clickedKeyKeyboard);
     });
 
     socket.on('keypressedDrums', (clickedKeyDrums) => {
-       
-        socket.broadcast.emit('keyDrums', clickedKeyDrums);
+
+        socket.broadcast.emit('drumKey', clickedKeyDrums);
     });
 });
 
-server.listen(port, ()=>{
+server.listen(port, () => {
     console.log(`Server running on Port ${port}...`);
 })

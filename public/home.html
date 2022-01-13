@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="style/styles.css">
-    </head>
-    <body>
-        <h1>Index</h1>
-        <form id="message-form">
-            <input id="message-input" type="text" name="message">
-            <button id="submit-btn" type="submit" >Sent</button>
-        </form>
 
-        <div id="audioControls">
-            <audio controls></audio>
+<head>
+    <link rel="stylesheet" href="style/styles.css">
+</head>
 
-            <div id="recordingButtons">
-                <input type="button" value="start recording" onclick="startRecording()">
-                <input type="button" value="stop recording" onclick="stopRecording()">
-            </div>
+<body>
+    <h1>Index</h1>
+    <form id="message-form">
+        <input id="message-input" type="text" name="message">
+        <button id="submit-btn" type="submit">Sent</button>
+    </form>
+
+    <div id="audioControls">
+        <audio controls></audio>
+
+        <div id="recordingButtons">
+            <input type="button" value="start recording" onclick="startRecording()">
+            <input type="button" value="stop recording" onclick="stopRecording()">
         </div>
-        
-        <div class="instruments">
+    </div>
+
+    <div class="instruments">
 
         <div id="keyboardFrame" tabindex="0">
             <ul id="keyboard">
@@ -46,64 +48,65 @@
 
         <div id="drumkitFrame" tabindex="0">
             <img src="images/drum-kit2.jpg" id="drumkit" width="500px" height="500px">
-                <div class="parent-key">
-                    <div data-key=65 class="key" id="drumA">
-                        <div>A</div>
-                        <span>Clap</span>
-                    </div>
-                    <div data-key=83 class="key" id="drumS">
-                        <div>S</div>
-                        <span>hihat</span>
-                    </div>
-                    <div data-key=68 class="key" id="drumD">
-                        <div>D</div>
-                        <span>kick</span>
-                    </div>
-                    <div data-key=70 class="key" id="drumF">
-                        <div>F</div>
-                        <span>openhat</span>
-                    </div>
-                    <div data-key=71 class="key" id="drumG">
-                        <div>G</div>
-                        <span>boom</span>
-                    </div>
-                    <div data-key=72 class="key" id="drumH">
-                        <div>H</div>
-                        <span>ride</span>
-                    </div>
-                    <div data-key=74 class="key" id="drumJ">
-                        <div>J</div>
-                        <span>snare</span>
-                    </div>
-                    <div data-key=75 class="key" id="drumK">
-                        <div>K</div>
-                        <span>tom</span>
-                    </div>
-                    <div data-key=76 class="key" id="drumL">
-                        <div>L</div>
-                        <span>tink</span>
-                    </div>
+            <div class="parent-key">
+                <div data-key=65 class="key" id="drumA">
+                    <div>A</div>
+                    <span>Clap</span>
                 </div>
+                <div data-key=83 class="key" id="drumS">
+                    <div>S</div>
+                    <span>hihat</span>
+                </div>
+                <div data-key=68 class="key" id="drumD">
+                    <div>D</div>
+                    <span>kick</span>
+                </div>
+                <div data-key=70 class="key" id="drumF">
+                    <div>F</div>
+                    <span>openhat</span>
+                </div>
+                <div data-key=71 class="key" id="drumG">
+                    <div>G</div>
+                    <span>boom</span>
+                </div>
+                <div data-key=72 class="key" id="drumH">
+                    <div>H</div>
+                    <span>ride</span>
+                </div>
+                <div data-key=74 class="key" id="drumJ">
+                    <div>J</div>
+                    <span>snare</span>
+                </div>
+                <div data-key=75 class="key" id="drumK">
+                    <div>K</div>
+                    <span>tom</span>
+                </div>
+                <div data-key=76 class="key" id="drumL">
+                    <div>L</div>
+                    <span>tink</span>
+                </div>
+            </div>
         </div>
-        
-            <audio data-key=71 id="sound_boom" src="sounds/virtual-drum_sounds_boom.wav"></audio>
-            <audio data-key=65 id="sound_clap" src="sounds/virtual-drum_sounds_clap.wav" ></audio>
-            <audio data-key=83 id="sound_hihat" src="sounds/virtual-drum_sounds_hihat.wav" ></audio>
-            <audio data-key=68 id="sound_kick" src="sounds/virtual-drum_sounds_kick.wav" ></audio>
-            <audio data-key=70 id="sound_openhat" src="sounds/virtual-drum_sounds_openhat.wav" ></audio>
-            <audio data-key=72 id="sound_ride" src="sounds/virtual-drum_sounds_ride.wav" ></audio>
-            <audio data-key=74 id="sound_snare" src="sounds/virtual-drum_sounds_snare.wav" ></audio>
-            <audio data-key=76 id="sound_tink" src="sounds/virtual-drum_sounds_tink.wav" ></audio>
-            <audio data-key=75 id="sound_tom" src="sounds/virtual-drum_sounds_tom.wav" ></audio>
-    
-        </div>
+
+        <audio data-key=71 id="sound_boom" src="sounds/virtual-drum_sounds_boom.wav"></audio>
+        <audio data-key=65 id="sound_clap" src="sounds/virtual-drum_sounds_clap.wav"></audio>
+        <audio data-key=83 id="sound_hihat" src="sounds/virtual-drum_sounds_hihat.wav"></audio>
+        <audio data-key=68 id="sound_kick" src="sounds/virtual-drum_sounds_kick.wav"></audio>
+        <audio data-key=70 id="sound_openhat" src="sounds/virtual-drum_sounds_openhat.wav"></audio>
+        <audio data-key=72 id="sound_ride" src="sounds/virtual-drum_sounds_ride.wav"></audio>
+        <audio data-key=74 id="sound_snare" src="sounds/virtual-drum_sounds_snare.wav"></audio>
+        <audio data-key=76 id="sound_tink" src="sounds/virtual-drum_sounds_tink.wav"></audio>
+        <audio data-key=75 id="sound_tom" src="sounds/virtual-drum_sounds_tom.wav"></audio>
+
+    </div>
 
 
-    </body>
+</body>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/script/chat.js"></script>
-    <script src="/script/keyboard.js"></script>
-    <script src="/script/drums.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/script/chat.js"></script>
+<script src="/script/stream.js"></script>
+<script src="/script/keyboard.js"></script>
+<script src="/script/drums.js"></script>
 
 </html>

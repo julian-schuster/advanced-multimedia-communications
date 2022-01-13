@@ -1,16 +1,16 @@
 let socket = io();
 console.log("worked");
 
-socket.on('connect', function() {
-    
+socket.on('connect', function () {
+
 });
 
-socket.on('disconnect', function() {
+socket.on('disconnect', function () {
     console.log("disconnected");
 });
 
 //receive messages
-socket.on('newMessage', function(message){
+socket.on('newMessage', function (message) {
     console.log("newMessage", message);
     let li = document.createElement('li');
     li.innerText = `${message.from}: ${message.text}`;
@@ -18,14 +18,18 @@ socket.on('newMessage', function(message){
 });
 
 //send message by form input
-document.querySelector('#submit-btn').addEventListener('click', function(e){
+document.querySelector('#submit-btn').addEventListener('click', function (e) {
     e.preventDefault();
     let name = window.location.search.replace(new RegExp('.*' + "name="), '');
     socket.emit('createMessage', {
         from: name,
-        text: document.querySelector('input[id="message-input"]').value          
-    }, function(){
+        text: document.querySelector('input[id="message-input"]').value
+    }, function () {
 
     });
 });
 
+document.getElementById('message-form').onclick = function () {
+    activateDrums = false;
+    activateKeyboard = false;
+};

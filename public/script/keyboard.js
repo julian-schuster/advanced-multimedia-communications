@@ -1,33 +1,102 @@
+var activateKeyboard = false;
 
-const audioContext = new AudioContext();
-  
-var dest = audioContext.createMediaStreamDestination();
+var clickedKeyKeyboard = "";
 
-mediaRecorder = new MediaRecorder(dest.stream);
+const pressedNotes = new Map();
 
-var chunks = [];
-var recording = false;
+document.getElementById('keyboardFrame').onclick = function () {
+  activateDrums = false;
+  activateKeyboard = true;
+};
 
 const getElementByNote = (note) => note && document.querySelector(`[note="${note}"]`);
 
-const keys = {
-  A: { element: getElementByNote("C"), note: "C", octaveOffset: 0 },
-  W: { element: getElementByNote("C#"), note: "C#", octaveOffset: 0 },
-  S: { element: getElementByNote("D"), note: "D", octaveOffset: 0 },
-  E: { element: getElementByNote("D#"), note: "D#", octaveOffset: 0 },
-  D: { element: getElementByNote("E"), note: "E", octaveOffset: 0 },
-  F: { element: getElementByNote("F"), note: "F", octaveOffset: 0 },
-  T: { element: getElementByNote("F#"), note: "F#", octaveOffset: 0 },
-  G: { element: getElementByNote("G"), note: "G", octaveOffset: 0 },
-  Y: { element: getElementByNote("G#"), note: "G#", octaveOffset: 0 },
-  H: { element: getElementByNote("A"), note: "A", octaveOffset: 1 },
-  U: { element: getElementByNote("A#"), note: "A#", octaveOffset: 1 },
-  J: { element: getElementByNote("B"), note: "B", octaveOffset: 1 },
-  K: { element: getElementByNote("C2"), note: "C", octaveOffset: 1 },
-  O: { element: getElementByNote("C#2"), note: "C#", octaveOffset: 1 },
-  L: { element: getElementByNote("D2"), note: "D", octaveOffset: 1 },
-  P: { element: getElementByNote("D#2"), note: "D#", octaveOffset: 1 },
-  semicolon: { element: getElementByNote("E2"), note: "E", octaveOffset: 1 }
+const keysKeyboard = {
+  A: {
+    element: getElementByNote("C"),
+    note: "C",
+    octaveOffset: 0
+  },
+  W: {
+    element: getElementByNote("C#"),
+    note: "C#",
+    octaveOffset: 0
+  },
+  S: {
+    element: getElementByNote("D"),
+    note: "D",
+    octaveOffset: 0
+  },
+  E: {
+    element: getElementByNote("D#"),
+    note: "D#",
+    octaveOffset: 0
+  },
+  D: {
+    element: getElementByNote("E"),
+    note: "E",
+    octaveOffset: 0
+  },
+  F: {
+    element: getElementByNote("F"),
+    note: "F",
+    octaveOffset: 0
+  },
+  T: {
+    element: getElementByNote("F#"),
+    note: "F#",
+    octaveOffset: 0
+  },
+  G: {
+    element: getElementByNote("G"),
+    note: "G",
+    octaveOffset: 0
+  },
+  Y: {
+    element: getElementByNote("G#"),
+    note: "G#",
+    octaveOffset: 0
+  },
+  H: {
+    element: getElementByNote("A"),
+    note: "A",
+    octaveOffset: 1
+  },
+  U: {
+    element: getElementByNote("A#"),
+    note: "A#",
+    octaveOffset: 1
+  },
+  J: {
+    element: getElementByNote("B"),
+    note: "B",
+    octaveOffset: 1
+  },
+  K: {
+    element: getElementByNote("C2"),
+    note: "C",
+    octaveOffset: 1
+  },
+  O: {
+    element: getElementByNote("C#2"),
+    note: "C#",
+    octaveOffset: 1
+  },
+  L: {
+    element: getElementByNote("D2"),
+    note: "D",
+    octaveOffset: 1
+  },
+  P: {
+    element: getElementByNote("D#2"),
+    note: "D#",
+    octaveOffset: 1
+  },
+  semicolon: {
+    element: getElementByNote("E2"),
+    note: "E",
+    octaveOffset: 1
+  }
 };
 
 const getHz = (note = "A", octave = 4) => {
@@ -81,17 +150,14 @@ const getHz = (note = "A", octave = 4) => {
   return A4 * Math.pow(2, N / 12);
 };
 
-const pressedNotes = new Map();
-let clickedKey = "";
-
 const playKey = (key) => {
 
-  if (!keys[key]) {
+  if (!keysKeyboard[key]) {
     return;
   }
 
-  if(!recording){
-    if(mediaRecorder.state == "recording"){
+  if (!recording) {
+    if (mediaRecorder.state == "recording") {
       mediaRecorder.stop();
     } else {
       mediaRecorder.start();
@@ -102,7 +168,9 @@ const playKey = (key) => {
 
   const noteGainNode = audioContext.createGain();
   noteGainNode.connect(audioContext.destination);
-  
+
+
+
   const zeroGain = 0.00001;
   const maxGain = 0.5;
   const sustainedGain = 0.001;
@@ -134,131 +202,43 @@ const playKey = (key) => {
 
   osc.type = "triangle";
 
-  const freq = getHz(keys[key].note, (keys[key].octaveOffset || 0) + 3);
+  const freq = getHz(keysKeyboard[key].note, (keysKeyboard[key].octaveOffset || 0) + 3);
 
   if (Number.isFinite(freq)) {
     osc.frequency.value = freq;
   }
 
-  keys[key].element.classList.add("pressed");
+  keysKeyboard[key].element.classList.add("pressed");
   pressedNotes.set(key, osc);
   pressedNotes.get(key).start();
-  
+
 };
 
 const stopKey = (key) => {
-  
-  if (!keys[key]) {
+
+  if (!keysKeyboard[key]) {
     return;
   }
 
-  keys[key].element.classList.remove("pressed");
+  keysKeyboard[key].element.classList.remove("pressed");
   const osc = pressedNotes.get(key);
 
   if (osc) {
-    
+
     osc.stop();
-    if(((mediaRecorder.state == "recording" || mediaRecorder.state != "inactive") && !recording)){
+    if (((mediaRecorder.state == "recording" || mediaRecorder.state != "inactive") && !recording)) {
       mediaRecorder.stop();
     }
-  
+
     pressedNotes.delete(key);
-  } 
+  }
 };
 
-document.addEventListener("keydown", (e) => {
-  const eventKey = e.key.toUpperCase();
-  const key = eventKey === ";" ? "semicolon" : eventKey;
-  
-  if (!key || pressedNotes.get(key)) {
-    return;
-  }
-
-  playKey(key);
-  clickedKey = key;
-});
-
-document.addEventListener("keyup", (e) => {
-  const eventKey = e.key.toUpperCase();
-  const key = eventKey === ";" ? "semicolon" : eventKey;
-  
-  if (!key) {
-    return;
-  }
-  stopKey(key);
-});
-
-for (const [key, { element }] of Object.entries(keys)) {
+for (const [key, {
+    element
+  }] of Object.entries(keysKeyboard)) {
   element.addEventListener("mousedown", () => {
     playKey(key);
-    clickedKey = key;
+    clickedKeyKeyboard = key;
   });
 }
-
-document.addEventListener("mouseup", () => {
-  stopKey(clickedKey);
-});
-
-mediaRecorder.ondataavailable = function(evt) {
-  // push each chunk (blobs) in an array
-  chunks.push(evt.data);
-  let blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
-
-  chunks.pop();
-
-  document.querySelector("audio").src = URL.createObjectURL(blob);
-  
-  if(blob.size > 0){
-    socket.emit('keyboard', blob);
-    socket.emit('keypressed', clickedKey);
-  }
-};
-
-
-function startRecording(){
-  
-  if(mediaRecorder.state == "recording"){
-    mediaRecorder.stop();
-    mediaRecorder.start();
-  } else {
-    recording = true;
-    mediaRecorder.start();
-    
-    console.log("started Recording");
-  }
-
-}
-
-function stopRecording(){
- 
-  if(mediaRecorder.state == "recording"){
-    
-    mediaRecorder.stop();
-    chunks = [];
-    recording = false; 
-    console.log("stopped Recording");
-  }
-  
-}
-
-// When the client receives a audio it will play the sound
-socket.on('sound', function(arrayBuffer) {
-  let blob = new Blob([arrayBuffer], { 'type' : 'audio/ogg; codecs=opus' });
-  var audio = new Audio(window.URL.createObjectURL(blob));
-  audio.play();
-});
-
-// When the client receives a key it will trigger the key
-socket.on('key', function(clickedKey) {
-
-  if (!keys[clickedKey]) {
-    return;
-  }
-
-  keys[clickedKey].element.classList.add("pressed");
-
-  setTimeout(() => {
-    keys[clickedKey].element.classList.remove("pressed");
-  }, 200);
-
-});

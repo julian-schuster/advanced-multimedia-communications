@@ -97,16 +97,12 @@ for (const [key, {
 
     clickedKeyDrums = key.querySelector('div').innerHTML;
 
-    let aud = audio;
-
-    fetch(aud.src, {
+    fetch(audio.src, {
       method: "GET"
     }).then((response) => {
       response.blob().then(function (blob) {
-
-        console.log(blob);
-        socket.emit('drums', blob);
         socket.emit('keypressedDrums', clickedKeyDrums);
+        socket.emit('drums', blob);
       });
     });
 

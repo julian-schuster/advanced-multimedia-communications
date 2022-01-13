@@ -14,7 +14,7 @@ mediaRecorder.onstop = function (evt) {
     chunks = [];
 
     if (blob.size > 0) {
-        document.querySelector("audio").src = URL.createObjectURL(blob);
+        //document.querySelector("audio").src = URL.createObjectURL(blob);
         socket.emit('keyboard', blob);
         socket.emit('keypressedKeyboard', clickedKeyKeyboard);
     };
@@ -127,9 +127,7 @@ document.addEventListener("keydown", (e) => {
 
         clickedKeyDrums = key.querySelector('div').innerHTML;
 
-        let aud = audio;
-
-        fetch(aud.src, {
+        fetch(audio.src, {
             method: "GET"
         }).then((response) => {
             response.blob().then(function (blob) {
@@ -156,6 +154,7 @@ document.addEventListener("mouseup", () => {
     stopKey(clickedKeyKeyboard);
 });
 
+/*
 function startRecording() {
 
     if (mediaRecorder.state == "recording") {
@@ -181,3 +180,4 @@ function stopRecording() {
     }
 
 }
+*/

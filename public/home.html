@@ -3,15 +3,36 @@
 
 <head>
     <link rel="stylesheet" href="style/styles.css">
+    <link rel="stylesheet" href="style/sidebar_right.css">
     <link rel="shortcut icon" href="#">
 </head>
 
-<body>
-    <h1>Index</h1>
-    <form id="message-form">
-        <input id="message-input" type="text" name="message">
-        <button id="submit-btn" type="submit">Sent</button>
-    </form>
+<body onload="initUser()">
+    <div id="sidebar_right">
+        <div id="users">
+            <h1>Users:</h1>
+            <div id="userbox">
+                <ul id="user_list">
+                    <!-- Users here -->
+                </ul>
+            </div>
+        </div>
+        <div id="chat">
+            <h1>Chat</h1>
+
+            <div id="chatbox">
+                <ul id="chat_list">
+                    <!-- Messages here -->
+                </ul>
+            </div>
+            <form id="message-form">
+                <input id="message-input" type="text" name="message">
+                <button id="submit-btn" type="submit">Sent</button>
+            </form>
+        </div>
+    </div>
+    
+
 <!--  
     <div id="audioControls">
         <audio controls></audio>
@@ -104,10 +125,14 @@
 
 </body>
 
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="/script/chat.js"></script>
 <script src="/script/stream.js"></script>
 <script src="/script/keyboard.js"></script>
 <script src="/script/drums.js"></script>
+<script src="/script/cursor.js"></script>
 
+<!-- global code -->
+<script src="/script/init.js"></script>
 </html>

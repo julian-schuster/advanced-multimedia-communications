@@ -330,3 +330,7 @@ div:focus {
     background-color: #66cc33 !important;
     border-color: #66cc33 !important;
 }
+
+.btn-success:hover, .btn-success:active {
+    background-color: #4b9925 !important;
+}

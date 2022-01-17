@@ -1,17 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html class="background">
     <head>
-
+      <link rel="stylesheet" href="style/styles.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     </head>
     <body>
-        <h1>Index</h1>
-        <form action="/home.html">
-            <label>Anzeigename:</label>
-            <input type="text" id="name" name="name">
-            <label>Color:</label>
-            <input type="color" value="#000000" id="colorWell" name="color">
-            <button>Join</button>
+      <div class="center">
+        <h1 class="studyjam">Jam.io</h1>
+        <form action="/home.html" class="displayname">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" id="name" name="name" maxlength="16" placeholder="Anzeigename">
+            <input type="color" class="form-control" value="#66cc33" id="colorWell" name="color">
+            <div class="input-group-append">
+              <button type="submit" class="btn btn-success">Join</button>
+            </div>
+          </div>
         </form>
+      </div>
     </body>
     <script src="/script/login.js"></script>
 </html>

@@ -3,14 +3,14 @@
 
 <head>
     <link rel="stylesheet" href="style/styles.css">
-    <link rel="stylesheet" href="style/sidebar_right.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="shortcut icon" href="#">
 </head>
 
 <body onload="initUser()">
     <div id="sidebar_right">
         <div id="users">
-            <h1>Users:</h1>
+            <h1>Userlist</h1>
             <div id="userbox">
                 <ul id="user_list">
                     <!-- Users here -->
@@ -26,14 +26,16 @@
                 </ul>
             </div>
             <form id="message-form">
-                <input id="message-input" type="text" name="message">
-                <button id="submit-btn" type="submit">Sent</button>
+              <div class="input-group mb-3">
+                <input id="message-input" class="form-control" type="text" name="message" maxlength="140">
+                <button id="submit-btn" class="btn btn-success" type="submit">Sent</button>
+              </div>
             </form>
         </div>
     </div>
-    
 
-<!--  
+
+<!--
     <div id="audioControls">
         <audio controls></audio>
 

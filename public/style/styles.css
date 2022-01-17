@@ -273,10 +273,12 @@ div:focus {
 #chatbox{
     background-color: white;
     width: 270px;
+    max-width: 100%;
     margin-left: 15px;
     margin-bottom: 15px;
     height: 350px;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 #chat_list{
     list-style-type: none;

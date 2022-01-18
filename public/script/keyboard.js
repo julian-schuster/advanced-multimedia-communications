@@ -1,6 +1,6 @@
 var activateKeyboard = false;
 
-var clickedKeyKeyboard = "";
+var clickedKeyKeyboard = [];
 
 const pressedNotes = new Map();
 
@@ -159,6 +159,7 @@ const playKey = (key) => {
   if (!recording) {
     if (mediaRecorder.state == "recording") {
       mediaRecorder.stop();
+      mediaRecorder.start();
     } else {
       mediaRecorder.start();
     }
@@ -168,8 +169,6 @@ const playKey = (key) => {
 
   const noteGainNode = audioContext.createGain();
   noteGainNode.connect(audioContext.destination);
-
-
 
   const zeroGain = 0.00001;
   const maxGain = 0.5;
@@ -221,6 +220,7 @@ const stopKey = (key) => {
   }
 
   keysKeyboard[key].element.classList.remove("pressed");
+
   const osc = pressedNotes.get(key);
 
   if (osc) {
@@ -228,17 +228,22 @@ const stopKey = (key) => {
     osc.stop();
     if (((mediaRecorder.state == "recording" || mediaRecorder.state != "inactive") && !recording)) {
       mediaRecorder.stop();
+
     }
 
     pressedNotes.delete(key);
+
   }
+
 };
 
 for (const [key, {
     element
   }] of Object.entries(keysKeyboard)) {
   element.addEventListener("mousedown", () => {
-    playKey(key);
-    clickedKeyKeyboard = key;
+    clickedKeyKeyboard.push(key);
+    clickedKeyKeyboard.forEach(element => {
+      playKey(element);
+    });
   });
 }

@@ -3,6 +3,7 @@ const audioContext = new AudioContext();
 var dest = audioContext.createMediaStreamDestination();
 var chunks = [];
 var recording = false;
+var someKeyIsPressed = false;
 
 mediaRecorder = new MediaRecorder(dest.stream);
 
@@ -13,10 +14,13 @@ mediaRecorder.onstop = function (evt) {
 
     chunks = [];
 
-    if (blob.size > 0) {
+    if (blob.size > 0 && !someKeyIsPressed) {
         //document.querySelector("audio").src = URL.createObjectURL(blob);
         socket.emit('keyboard', blob);
         socket.emit('keypressedKeyboard', clickedKeyKeyboard);
+
+        clickedKeyKeyboard = [];
+
     };
 
 };
@@ -37,17 +41,17 @@ socket.on('keyboardSound', function (arrayBuffer) {
 // When the client receives a key it will trigger the key
 socket.on('keyboardKey', function (clickedKeyKeyboard) {
 
+    console.log(clickedKeyKeyboard);
+    clickedKeyKeyboard.forEach(element => {
+        if (!keysKeyboard[element]) {
+            return;
+        }
+        keysKeyboard[element].element.classList.add("pressed");
 
-    if (!keysKeyboard[clickedKeyKeyboard]) {
-        return;
-    }
-
-    keysKeyboard[clickedKeyKeyboard].element.classList.add("pressed");
-
-    setTimeout(() => {
-        keysKeyboard[clickedKeyKeyboard].element.classList.remove("pressed");
-    }, 200);
-
+        setTimeout(() => {
+            keysKeyboard[element].element.classList.remove("pressed");
+        }, 200);
+    });
 });
 
 // When the client receives a audio it will play the sound
@@ -111,8 +115,13 @@ document.addEventListener("keydown", (e) => {
             return;
         }
 
-        playKey(key);
-        clickedKeyKeyboard = key;
+        clickedKeyKeyboard.push(key);
+        someKeyIsPressed = true;
+
+        clickedKeyKeyboard.forEach(element => {
+            playKey(element);
+        });
+
     } else if (activateDrums) {
 
         if (!document.querySelector(`audio[data-key="${e.keyCode}"]`)) {
@@ -146,12 +155,18 @@ document.addEventListener("keyup", (e) => {
         if (!key) {
             return;
         }
-        stopKey(key);
+        someKeyIsPressed = false;
+        clickedKeyKeyboard.forEach(element => {
+            stopKey(element);
+        });
+
     }
 });
 
 document.addEventListener("mouseup", () => {
-    stopKey(clickedKeyKeyboard);
+    clickedKeyKeyboard.forEach(element => {
+        stopKey(element);
+    });
 });
 
 /*

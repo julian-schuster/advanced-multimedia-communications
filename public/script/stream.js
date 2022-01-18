@@ -41,7 +41,6 @@ socket.on('keyboardSound', function (arrayBuffer) {
 // When the client receives a key it will trigger the key
 socket.on('keyboardKey', function (clickedKeyKeyboard) {
 
-    console.log(clickedKeyKeyboard);
     clickedKeyKeyboard.forEach(element => {
         if (!keysKeyboard[element]) {
             return;
@@ -68,41 +67,44 @@ socket.on('drumSound', function (arrayBuffer) {
 // When the client receives a audio it will play the sound
 socket.on('drumKey', function (clickedKeyDrums) {
 
-    switch (clickedKeyDrums) {
-        case "A":
-            keyCode = 65;
-            break;
-        case "S":
-            keyCode = 83;
-            break;
-        case "D":
-            keyCode = 68;
-            break;
-        case "F":
-            keyCode = 70;
-            break;
-        case "G":
-            keyCode = 71;
-            break;
-        case "H":
-            keyCode = 72;
-            break;
-        case "J":
-            keyCode = 74;
-            break;
-        case "K":
-            keyCode = 75;
-            break;
-        case "L":
-            keyCode = 76;
-            break;
-        default:
-            return;
-    }
-
-    let key = document.querySelector(`.key[data-key="${keyCode}"]`)
-
-    key.classList.add('playing');
+    clickedKeyDrums.forEach(element => {
+        switch (element) {
+            case "A":
+                keyCode = 65;
+                break;
+            case "S":
+                keyCode = 83;
+                break;
+            case "D":
+                keyCode = 68;
+                break;
+            case "F":
+                keyCode = 70;
+                break;
+            case "G":
+                keyCode = 71;
+                break;
+            case "H":
+                keyCode = 72;
+                break;
+            case "J":
+                keyCode = 74;
+                break;
+            case "K":
+                keyCode = 75;
+                break;
+            case "L":
+                keyCode = 76;
+                break;
+            default:
+                return;
+        }
+    
+        let key = document.querySelector(`.key[data-key="${keyCode}"]`)
+    
+        key.classList.add('playing');
+    });
+  
 
 });
 
@@ -134,14 +136,15 @@ document.addEventListener("keydown", (e) => {
         audio.play();
         key.classList.add('playing');
 
-        clickedKeyDrums = key.querySelector('div').innerHTML;
-
+        clickedKeyDrums.push(key.querySelector('div').innerHTML);
+        console.log(clickedKeyDrums);
         fetch(audio.src, {
             method: "GET"
         }).then((response) => {
             response.blob().then(function (blob) {
                 socket.emit('drums', blob);
                 socket.emit('keypressedDrums', clickedKeyDrums);
+                clickedKeyDrums = [];
             });
         });
     }

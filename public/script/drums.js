@@ -1,5 +1,5 @@
 var activateDrums = false;
-var clickedKeyDrums = "";
+var clickedKeyDrums = [];
 var keypressed = document.querySelectorAll('.key');
 
 document.getElementById('drumkitFrame').onclick = function () {
@@ -95,7 +95,7 @@ for (const [key, {
     audio.play();
     key.classList.add('playing');
 
-    clickedKeyDrums = key.querySelector('div').innerHTML;
+    clickedKeyDrums.push(key.querySelector('div').innerHTML);
 
     fetch(audio.src, {
       method: "GET"
@@ -103,6 +103,7 @@ for (const [key, {
       response.blob().then(function (blob) {
         socket.emit('keypressedDrums', clickedKeyDrums);
         socket.emit('drums', blob);
+        clickedKeyDrums = [];
       });
     });
 

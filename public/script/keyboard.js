@@ -156,7 +156,7 @@ const playKey = (key) => {
     return;
   }
 
-  if (!recording) {
+  if (!recording || !someKeyIsPressed) {
     if (mediaRecorder.state == "recording") {
       mediaRecorder.stop();
       mediaRecorder.start();
@@ -226,7 +226,7 @@ const stopKey = (key) => {
   if (osc) {
 
     osc.stop();
-    if (((mediaRecorder.state == "recording" || mediaRecorder.state != "inactive") && !recording)) {
+    if (((mediaRecorder.state == "recording" || mediaRecorder.state != "inactive") && !recording && !someKeyIsPressed)) {
       mediaRecorder.stop();
 
     }
@@ -237,13 +237,14 @@ const stopKey = (key) => {
 
 };
 
-for (const [key, {
-    element
-  }] of Object.entries(keysKeyboard)) {
+for (const [key, {element}] of Object.entries(keysKeyboard)) {
+  
   element.addEventListener("mousedown", () => {
     clickedKeyKeyboard.push(key);
-    clickedKeyKeyboard.forEach(element => {
-      playKey(element);
-    });
+
+    playKey(key);
+    
+    socket.emit('keypressedKeyboard', clickedKeyKeyboard);
   });
+
 }

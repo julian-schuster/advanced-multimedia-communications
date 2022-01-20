@@ -76,6 +76,11 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('keyboardKey', clickedKeyKeyboard);
     });
 
+    socket.on('releasedKeyKeyboard', (key) => {
+
+        socket.broadcast.emit('keyboardReleasedKey', key);
+    });
+
     socket.on('keypressedDrums', (clickedKeyDrums) => {
 
         socket.broadcast.emit('drumKey', clickedKeyDrums);

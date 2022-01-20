@@ -7,26 +7,24 @@ var someKeyIsPressed = false;
 
 mediaRecorder = new MediaRecorder(dest.stream);
 
-mediaRecorder.onstop = function (evt) {
-    let blob = new Blob(chunks, {
-        'type': 'audio/wav'
-    });
-
-    chunks = [];
-
-    if (blob.size > 0 && !someKeyIsPressed) {
-        //document.querySelector("audio").src = URL.createObjectURL(blob);
-        socket.emit('keyboard', blob);
-        socket.emit('keypressedKeyboard', clickedKeyKeyboard);
-
-        clickedKeyKeyboard = [];
-
-    };
-
-};
-
 mediaRecorder.ondataavailable = function (evt) {
+
     chunks.push(evt.data);
+
+    if (!someKeyIsPressed) {
+       
+        let blob = new Blob(chunks, {
+            'type': 'audio/wav'
+        });
+    
+        if (blob.size > 0) {
+          socket.emit('keyboard', blob);
+        }
+   
+        clickedKeyKeyboard = [];
+        chunks = [];
+    }
+
 }
 
 // When the client receives a audio it will play the sound
@@ -34,6 +32,7 @@ socket.on('keyboardSound', function (arrayBuffer) {
     let blob = new Blob([arrayBuffer], {
         'type': 'audio/ogg; codecs=opus'
     });
+
     var audio = new Audio(window.URL.createObjectURL(blob));
     audio.play();
 });
@@ -45,12 +44,20 @@ socket.on('keyboardKey', function (clickedKeyKeyboard) {
         if (!keysKeyboard[element]) {
             return;
         }
+        
         keysKeyboard[element].element.classList.add("pressed");
-
-        setTimeout(() => {
-            keysKeyboard[element].element.classList.remove("pressed");
-        }, 200);
+        
     });
+});
+
+socket.on('keyboardReleasedKey', function (key) {
+
+        if (!keysKeyboard[key]) {
+          return;
+        }
+        
+        keysKeyboard[key].element.classList.remove("pressed");
+        
 });
 
 // When the client receives a audio it will play the sound
@@ -118,12 +125,13 @@ document.addEventListener("keydown", (e) => {
         }
 
         clickedKeyKeyboard.push(key);
+        
         someKeyIsPressed = true;
 
-        clickedKeyKeyboard.forEach(element => {
-            playKey(element);
-        });
+        playKey(key);
 
+        socket.emit('keypressedKeyboard', clickedKeyKeyboard);
+        
     } else if (activateDrums) {
 
         if (!document.querySelector(`audio[data-key="${e.keyCode}"]`)) {
@@ -137,7 +145,7 @@ document.addEventListener("keydown", (e) => {
         key.classList.add('playing');
 
         clickedKeyDrums.push(key.querySelector('div').innerHTML);
-        console.log(clickedKeyDrums);
+
         fetch(audio.src, {
             method: "GET"
         }).then((response) => {
@@ -158,8 +166,10 @@ document.addEventListener("keyup", (e) => {
         if (!key) {
             return;
         }
+
         someKeyIsPressed = false;
         clickedKeyKeyboard.forEach(element => {
+            socket.emit('releasedKeyKeyboard', element);
             stopKey(element);
         });
 
@@ -167,35 +177,7 @@ document.addEventListener("keyup", (e) => {
 });
 
 document.addEventListener("mouseup", () => {
-    clickedKeyKeyboard.forEach(element => {
-        stopKey(element);
-    });
+    lastKey = clickedKeyKeyboard.pop();
+    stopKey(lastKey);
+    socket.emit('releasedKeyKeyboard', lastKey);
 });
-
-/*
-function startRecording() {
-
-    if (mediaRecorder.state == "recording") {
-        mediaRecorder.stop();
-        mediaRecorder.start();
-    } else {
-        recording = true;
-        mediaRecorder.start();
-
-        console.log("started Recording");
-    }
-
-}
-
-function stopRecording() {
-
-    if (mediaRecorder.state == "recording") {
-
-        mediaRecorder.stop();
-        chunks = [];
-        recording = false;
-        console.log("stopped Recording");
-    }
-
-}
-*/

@@ -223,6 +223,13 @@ div:focus {
   margin-left: 14%;
 }
 
+#videoWatcher {
+  margin-left: 200px;
+}
+
+#videoBroadcaster {
+  margin-top: 200px;
+}
 
 /*-------------SIDEBAR--------------*/
 

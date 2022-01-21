@@ -1,5 +1,5 @@
 const peerConnections = {};
-const config = {
+const configBroadcast = {
   iceServers: [
     { 
       "urls": "stun:stun.l.google.com:19302",
@@ -12,14 +12,14 @@ const config = {
   ]
 };
 
-const socket = io.connect(window.location.origin);
+const socketBroadcast = io.connect(window.location.origin);
 
-socket.on("answer", (id, description) => {
+socketBroadcast.on("answer", (id, description) => {
   peerConnections[id].setRemoteDescription(description);
 });
 
-socket.on("watcher", id => {
-  const peerConnection = new RTCPeerConnection(config);
+socketBroadcast.on("watcher", id => {
+  const peerConnection = new RTCPeerConnection(configBroadcast);
   peerConnections[id] = peerConnection;
 
   let stream = videoElement.srcObject;
@@ -27,7 +27,7 @@ socket.on("watcher", id => {
 
   peerConnection.onicecandidate = event => {
     if (event.candidate) {
-      socket.emit("candidate", id, event.candidate);
+      socketBroadcast.emit("candidate", id, event.candidate);
     }
   };
 
@@ -35,21 +35,21 @@ socket.on("watcher", id => {
     .createOffer()
     .then(sdp => peerConnection.setLocalDescription(sdp))
     .then(() => {
-      socket.emit("offer", id, peerConnection.localDescription);
+      socketBroadcast.emit("offer", id, peerConnection.localDescription);
     });
 });
 
-socket.on("candidate", (id, candidate) => {
+socketBroadcast.on("candidate", (id, candidate) => {
   peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
 });
 
-socket.on("disconnectPeer", id => {
+socketBroadcast.on("disconnectPeer", id => {
   peerConnections[id].close();
   delete peerConnections[id];
 });
 
 window.onunload = window.onbeforeunload = () => {
-  socket.close();
+  socketBroadcast.close();
 };
 
 // Get camera and microphone
@@ -110,7 +110,7 @@ function gotStream(stream) {
     option => option.text === stream.getVideoTracks()[0].label
   );
   videoElement.srcObject = stream;
-  socket.emit("broadcaster");
+  socketBroadcast.emit("broadcaster");
 }
 
 function handleError(error) {

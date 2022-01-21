@@ -181,3 +181,7 @@ document.addEventListener("mouseup", () => {
     stopKey(lastKey);
     socket.emit('releasedKeyKeyboard', lastKey);
 });
+
+$.ajax({url: "/watch.html", success: function(result){
+    $("#broadcasterList").append((result));
+}});

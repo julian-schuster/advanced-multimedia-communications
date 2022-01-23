@@ -40,7 +40,7 @@ mediaRecorder.ondataavailable = function (evt) {
         });
     
         if (blob.size > 0) {
-          socket.emit('keyboard', blob);
+          socket.emit('keyboard', room, blob);
         }
    
         clickedKeyKeyboard = [];
@@ -152,7 +152,7 @@ document.addEventListener("keydown", (e) => {
 
         playKey(key);
 
-        socket.emit('keypressedKeyboard', clickedKeyKeyboard);
+        socket.emit('keypressedKeyboard', room, clickedKeyKeyboard);
         
     } else if (activateDrums) {
 
@@ -172,8 +172,8 @@ document.addEventListener("keydown", (e) => {
             method: "GET"
         }).then((response) => {
             response.blob().then(function (blob) {
-                socket.emit('drums', blob);
-                socket.emit('keypressedDrums', clickedKeyDrums);
+                socket.emit('drums', room, blob);
+                socket.emit('keypressedDrums', room, clickedKeyDrums);
                 clickedKeyDrums = [];
             });
         });
@@ -191,7 +191,7 @@ document.addEventListener("keyup", (e) => {
 
         someKeyIsPressed = false;
         clickedKeyKeyboard.forEach(element => {
-            socket.emit('releasedKeyKeyboard', element);
+            socket.emit('releasedKeyKeyboard', room, element);
             stopKey(element);
         });
 
@@ -202,7 +202,7 @@ document.addEventListener("mouseup", () => {
     
     lastKey = clickedKeyKeyboard.pop();
     stopKey(lastKey);
-    socket.emit('releasedKeyKeyboard', lastKey);
+    socket.emit('releasedKeyKeyboard', room, lastKey);
 });
 
 $( "#takeSpotlight" ).click(function() {

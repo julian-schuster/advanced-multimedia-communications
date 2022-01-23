@@ -6,6 +6,7 @@ const socketIO = require('socket.io');
 const {generateMessage} = require('./modules/message');
 const {userJoin, getUser, deleteUser, getUsersInRoom, countUsersInRoom} = require('./modules/users');
 const { newRoom, isNewRoom, getAllRooms, deleteRoom} = require('./modules/rooms');
+const { log } = require('console');
 
 
 const publicPath = path.join(__dirname, './public');
@@ -14,6 +15,7 @@ let app = express();
 let server = http.createServer(app);
 let io = socketIO(server);
 let broadcaster;
+let broadcasterRoom = [];
 
 app.use(express.static(publicPath));
 
@@ -75,57 +77,71 @@ io.on('connection', (socket) => {
         socket.broadcast.to(room).emit('all_mouse_activity', {session_id: socket.id, cords: data});
     });
 
-
-
-
-    socket.on('keyboard', function (blob) {
+    socket.on('keyboard', function (room, blob) {
         // can choose to broadcast it to whoever you want
-        socket.broadcast.emit('keyboardSound', blob);
+        socket.broadcast.to(room).emit('keyboardSound', blob);
     });
 
-    socket.on('drums', function (blob) {
+    socket.on('drums', function (room, blob) {
         // can choose to broadcast it to whoever you want
-        socket.broadcast.emit('drumSound', blob);
+        socket.broadcast.to(room).emit('drumSound', blob);
     });
 
-    socket.on('keypressedKeyboard', (clickedKeyKeyboard) => {
-
-        socket.broadcast.emit('keyboardKey', clickedKeyKeyboard);
+    socket.on('keypressedKeyboard', (room, clickedKeyKeyboard) => {
+        socket.broadcast.to(room).emit('keyboardKey', clickedKeyKeyboard);
     });
 
-    socket.on('releasedKeyKeyboard', (key) => {
+    socket.on('releasedKeyKeyboard', (room, key) => {
 
-        socket.broadcast.emit('keyboardReleasedKey', key);
+        socket.broadcast.to(room).emit('keyboardReleasedKey', key);
     });
 
-    socket.on('keypressedDrums', (clickedKeyDrums) => {
+    socket.on('keypressedDrums', (room, clickedKeyDrums) => {
 
-        socket.broadcast.emit('drumKey', clickedKeyDrums);
+        socket.broadcast.to(room).emit('drumKey', clickedKeyDrums);
     });
 
-    socket.on("broadcaster", () => {
+    socket.on("broadcaster", (room) => {
         broadcaster = socket.id;
-        socket.broadcast.emit("broadcaster");
+        broadcasterRoom = room;
+        console.log(broadcaster + " started a broadcast in room " + broadcasterRoom);
+        socket.broadcast.to(room).emit("broadcaster");
     });
 
-    socket.on("watcher", () => {
-        socket.to(broadcaster).emit("watcher", socket.id);
+    socket.on("watcher", (room) => {
+        console.log("new Watcher sees: " + broadcaster + " in room " + broadcasterRoom);
+        if (room == broadcasterRoom) {
+            socket.to(room).to(broadcaster).emit("watcher", socket.id);
+        }
+
     });
 
-    socket.on("disconnectPeer", () => {
-        socket.to(broadcaster).emit("peerDisconnected", socket.id);
+    socket.on("disconnectPeer", (room) => {
+        if (room == broadcasterRoom) {
+            socket.to(room).to(broadcaster).emit("peerDisconnected", socket.id);
+        }
+  
     });
 
-    socket.on("offer", (id, message) => {
-        socket.to(id).emit("offer", socket.id, message);
+    socket.on("offer", (room, id, message) => {
+        if (room == broadcasterRoom) {
+            socket.to(room).to(id).emit("offer", socket.id, message);
+        }
+      
     });
 
-    socket.on("answer", (id, message) => {
-        socket.to(id).emit("answer", socket.id, message);
+    socket.on("answer", (room, id, message) => {
+        if (room == broadcasterRoom) {
+            socket.to(room).to(id).emit("answer", socket.id, message);
+        }
+    
     });
 
-    socket.on("candidate", (id, message) => {
-        socket.to(id).emit("candidate", socket.id, message);
+    socket.on("candidate", (room, id, message) => {
+        if (room == broadcasterRoom) {
+            socket.to(room).to(id).emit("candidate", socket.id, message);
+        }
+      
     });
 
 });

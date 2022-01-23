@@ -250,7 +250,7 @@ for (const [key, {element}] of Object.entries(keysKeyboard)) {
    
     playKey(key);
     
-    socket.emit('keypressedKeyboard', clickedKeyKeyboard);
+    socket.emit('keypressedKeyboard', room, clickedKeyKeyboard);
   });
 
 }

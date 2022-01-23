@@ -14,7 +14,7 @@ socketBroadcast.on("watcher", id => {
 
   peerConnection.onicecandidate = event => {
     if (event.candidate) {
-      socketBroadcast.emit("candidate", id, event.candidate);
+      socketBroadcast.emit("candidate", room, id, event.candidate);
     }
   };
 
@@ -22,7 +22,7 @@ socketBroadcast.on("watcher", id => {
     .createOffer()
     .then(sdp => peerConnection.setLocalDescription(sdp))
     .then(() => {
-      socketBroadcast.emit("offer", id, peerConnection.localDescription);
+      socketBroadcast.emit("offer", room, id, peerConnection.localDescription);
     });
 });
 
@@ -101,7 +101,7 @@ function gotStream(stream) {
     option => option.text === stream.getVideoTracks()[0].label
   );
   videoElement.srcObject = stream;
-  socketBroadcast.emit("broadcaster");
+  socketBroadcast.emit("broadcaster", room);
 }
 
 function handleError(error) {

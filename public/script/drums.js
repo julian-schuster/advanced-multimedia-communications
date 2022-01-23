@@ -101,8 +101,8 @@ for (const [key, {
       method: "GET"
     }).then((response) => {
       response.blob().then(function (blob) {
-        socket.emit('keypressedDrums', clickedKeyDrums);
-        socket.emit('drums', blob);
+        socket.emit('keypressedDrums', room, clickedKeyDrums);
+        socket.emit('drums', room, blob);
         clickedKeyDrums = [];
       });
     });

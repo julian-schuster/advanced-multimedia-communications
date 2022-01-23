@@ -89,3 +89,4 @@ function goBack(){
     newUrl = url.substr(0, url.indexOf("/home"));
     window.location.href = newUrl;
 }
+

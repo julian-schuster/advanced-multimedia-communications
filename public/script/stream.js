@@ -132,9 +132,6 @@ socket.on('drumKey', function (clickedKeyDrums) {
         let key = document.querySelector(`.key[data-key="${keyCode}"]`)
     
         key.classList.add('playing');
-        setTimeout(function() {
-            key.classList.remove('playing');
-        }, 200);
     });
   
 
@@ -168,10 +165,6 @@ document.addEventListener("keydown", (e) => {
         audio.currentTime = 0;
         audio.play();
         key.classList.add('playing');
-        
-        setTimeout(function() {
-            key.classList.remove('playing');
-        }, 200);
 
         clickedKeyDrums.push(key.querySelector('div').innerHTML);
 
@@ -223,10 +216,7 @@ $( "#takeSpotlight" ).click(function() {
     }});
   });
 
-$.ajax({url: "/watch.html", success: function(result){
-    $("#broadcaster").append((result));
-}});
-        
+
 $("#leaveSpotlight").click(function() {
     if (window.stream) {
         window.stream.getTracks().forEach(track => {
@@ -234,3 +224,9 @@ $("#leaveSpotlight").click(function() {
         });
     }
 });
+
+setTimeout(function() {
+    $.ajax({url: "/watch.html", success: function(result){
+        $("#broadcaster").append((result));
+    }});
+}, 250);

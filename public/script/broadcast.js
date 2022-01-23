@@ -5,7 +5,7 @@ socketBroadcast.on("answer", (id, description) => {
 });
 
 socketBroadcast.on("watcher", id => {
-  console.log("New Watcher with id:"  + id);
+  //console.log("New Watcher with id:"  + id);
   const peerConnection = new RTCPeerConnection(configBroadcast);
   peerConnections[id] = peerConnection;
 
@@ -28,12 +28,12 @@ socketBroadcast.on("watcher", id => {
 
 socketBroadcast.on("candidate", (id, candidate) => {
   peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
-  console.log(peerConnections);
+  //console.log(peerConnections);
 });
 
 socketBroadcast.on("peerDisconnected", id => {
 
-    console.log("Watcher with id: " + id + " disconnected");
+    //console.log("Watcher with id: " + id + " disconnected");
     peerConnections[id].close();
     delete peerConnections[id];
 

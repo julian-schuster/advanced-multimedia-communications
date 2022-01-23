@@ -26,15 +26,14 @@ socketWatch.on("offer", (id, description) => {
     .then(() => peerConnection.createAnswer())
     .then(sdp => peerConnection.setLocalDescription(sdp))
     .then(() => {
-      socketWatch.emit("answer", id, peerConnection.localDescription);
+      socketWatch.emit("answer", room, id, peerConnection.localDescription);
     });
   peerConnection.ontrack = event => {
-    console.log(event);
     video.srcObject = event.streams[0];
   };
   peerConnection.onicecandidate = event => {
     if (event.candidate) {
-      socketWatch.emit("candidate", id, event.candidate);
+      socketWatch.emit("candidate", room, id, event.candidate);
     }
   };
 });
@@ -46,11 +45,11 @@ socketWatch.on("candidate", (id, candidate) => {
 });
 
 socketWatch.on("connect", () => {
-  socketWatch.emit("watcher");
+  socketWatch.emit("watcher", room);
 });
 
 socketWatch.on("broadcaster", () => {
-  socketWatch.emit("watcher");
+  socketWatch.emit("watcher", room);
 });
 
 function toggleAudio() {
@@ -63,7 +62,7 @@ function toggleAudio() {
 }
 
 function disconnectPeer(){
-  socketWatch.emit("disconnectPeer");
+  socketWatch.emit("disconnectPeer", room);
 }
 
 window.onunload = window.onbeforeunload = () => {

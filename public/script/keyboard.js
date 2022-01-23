@@ -242,8 +242,6 @@ for (const [key, {element}] of Object.entries(keysKeyboard)) {
   
   element.addEventListener("mousedown", () => {
 
-    someKeyIsPressed = true;
-
     if(!clickedKeyKeyboard.includes(key)){
       clickedKeyKeyboard.push(key);
     }

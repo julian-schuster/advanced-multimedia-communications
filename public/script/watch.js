@@ -14,9 +14,10 @@ const config = {
 
 const socketWatch = io.connect(window.location.origin);
 const video = document.querySelector("video");
-const enableAudioButton = document.querySelector("#enable-audio");
-
-enableAudioButton.addEventListener("click", enableAudio)
+const toggleAudioButton = document.querySelector("#toggle-audio");
+const disconnectPeerButton = document.querySelector("#disconnectPeer");
+toggleAudioButton.addEventListener("click", toggleAudio)
+disconnectPeerButton.addEventListener("click", disconnectPeer)
 
 socketWatch.on("offer", (id, description) => {
   peerConnection = new RTCPeerConnection(config);
@@ -28,6 +29,7 @@ socketWatch.on("offer", (id, description) => {
       socketWatch.emit("answer", id, peerConnection.localDescription);
     });
   peerConnection.ontrack = event => {
+    console.log(event);
     video.srcObject = event.streams[0];
   };
   peerConnection.onicecandidate = event => {
@@ -36,7 +38,6 @@ socketWatch.on("offer", (id, description) => {
     }
   };
 });
-
 
 socketWatch.on("candidate", (id, candidate) => {
   peerConnection
@@ -52,12 +53,20 @@ socketWatch.on("broadcaster", () => {
   socketWatch.emit("watcher");
 });
 
+function toggleAudio() {
+  if (video.muted) {
+    video.muted = false;
+  } else {
+    video.muted = true;
+  }
+  
+}
+
+function disconnectPeer(){
+  socketWatch.emit("disconnectPeer");
+}
+
 window.onunload = window.onbeforeunload = () => {
   socketWatch.close();
   peerConnection.close();
 };
-
-function enableAudio() {
-  console.log("Enabling audio")
-  video.muted = false;
-}

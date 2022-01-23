@@ -1,24 +1,11 @@
-const peerConnections = {};
-const configBroadcast = {
-  iceServers: [
-    { 
-      "urls": "stun:stun.l.google.com:19302",
-    },
-    // { 
-    //   "urls": "turn:TURN_IP?transport=tcp",
-    //   "username": "TURN_USERNAME",
-    //   "credential": "TURN_CREDENTIALS"
-    // }
-  ]
-};
-
-const socketBroadcast = io.connect(window.location.origin);
+//socketBroadcast = io.connect(window.location.origin);
 
 socketBroadcast.on("answer", (id, description) => {
   peerConnections[id].setRemoteDescription(description);
 });
 
 socketBroadcast.on("watcher", id => {
+  console.log("New Watcher with id:"  + id);
   const peerConnection = new RTCPeerConnection(configBroadcast);
   peerConnections[id] = peerConnection;
 
@@ -41,11 +28,15 @@ socketBroadcast.on("watcher", id => {
 
 socketBroadcast.on("candidate", (id, candidate) => {
   peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
+  console.log(peerConnections);
 });
 
-socketBroadcast.on("disconnectPeer", id => {
-  peerConnections[id].close();
-  delete peerConnections[id];
+socketBroadcast.on("peerDisconnected", id => {
+
+    console.log("Watcher with id: " + id + " disconnected");
+    peerConnections[id].close();
+    delete peerConnections[id];
+
 });
 
 window.onunload = window.onbeforeunload = () => {
@@ -53,9 +44,9 @@ window.onunload = window.onbeforeunload = () => {
 };
 
 // Get camera and microphone
-const videoElement = document.querySelector("video");
-const audioSelect = document.querySelector("select#audioSource");
-const videoSelect = document.querySelector("select#videoSource");
+videoElement = document.querySelector("video");
+audioSelect = document.querySelector("select#audioSource");
+videoSelect = document.querySelector("select#videoSource");
 
 audioSelect.onchange = getStream;
 videoSelect.onchange = getStream;

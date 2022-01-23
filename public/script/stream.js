@@ -5,6 +5,28 @@ var chunks = [];
 var recording = false;
 var someKeyIsPressed = false;
 
+//Initialisierung von Variablen für broadcasting video stream
+const peerConnections = {};
+const configBroadcast = {
+  iceServers: [
+    { 
+      "urls": "stun:stun.l.google.com:19302",
+    },
+    // { 
+    //   "urls": "turn:TURN_IP?transport=tcp",
+    //   "username": "TURN_USERNAME",
+    //   "credential": "TURN_CREDENTIALS"
+    // }
+  ]
+};
+
+var socketBroadcast = io.connect(window.location.origin);
+var videoElement;
+var audioSelect;
+var videoSelect;
+
+// MediaRecorder for Keyboard
+
 mediaRecorder = new MediaRecorder(dest.stream);
 
 mediaRecorder.ondataavailable = function (evt) {
@@ -182,6 +204,25 @@ document.addEventListener("mouseup", () => {
     socket.emit('releasedKeyKeyboard', lastKey);
 });
 
+$( "#takeSpotlight" ).click(function() {
+    $.ajax({url: "/broadcast.html", success: function(result){
+        $("#broadcasterHidden").append((result));
+        if (window.stream) {
+            window.stream.getTracks().forEach(track => {
+              track.enabled = true;
+            });
+        }
+    }});
+  });
+
 $.ajax({url: "/watch.html", success: function(result){
-    $("#broadcasterList").append((result));
+    $("#broadcaster").append((result));
 }});
+        
+$("#leaveSpotlight").click(function() {
+    if (window.stream) {
+        window.stream.getTracks().forEach(track => {
+          track.enabled = false;
+        });
+    }
+});

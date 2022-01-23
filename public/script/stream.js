@@ -132,6 +132,9 @@ socket.on('drumKey', function (clickedKeyDrums) {
         let key = document.querySelector(`.key[data-key="${keyCode}"]`)
     
         key.classList.add('playing');
+        setTimeout(function() {
+            key.classList.remove('playing');
+        }, 200);
     });
   
 
@@ -165,6 +168,10 @@ document.addEventListener("keydown", (e) => {
         audio.currentTime = 0;
         audio.play();
         key.classList.add('playing');
+        
+        setTimeout(function() {
+            key.classList.remove('playing');
+        }, 200);
 
         clickedKeyDrums.push(key.querySelector('div').innerHTML);
 
@@ -199,7 +206,7 @@ document.addEventListener("keyup", (e) => {
 });
 
 document.addEventListener("mouseup", () => {
-    someKeyIsPressed = false;
+    
     lastKey = clickedKeyKeyboard.pop();
     stopKey(lastKey);
     socket.emit('releasedKeyKeyboard', lastKey);

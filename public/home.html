@@ -8,8 +8,15 @@
     <link rel="shortcut icon" href="#">
 </head>
 
-<body onload="initUser()">
+<body">
     <div id="sidebar_right">
+        <button type="button" class="btn btn-danger" onclick="goBack()"> <- Back to Login</button>
+        <div id="rooms">
+            <h1>Rooms</h1>
+            <select id="roomSelect" class="form-select" onchange="changeRoom()">
+                <option id="general" value="General">General</option>
+            </select>
+        </div>
         <div id="users">
             <h1>Userlist</h1>
             <div id="userbox">

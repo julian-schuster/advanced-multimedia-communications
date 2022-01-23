@@ -307,6 +307,10 @@ div:focus {
   padding: 5px;
 }
 
+#rooms{
+  margin-bottom: 15px;
+}
+
 #message-form {}
 
 /*-------------------PAGE STYLING; JULIAN PFOTEN WEG---------------*/

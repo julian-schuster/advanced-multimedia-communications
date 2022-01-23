@@ -3,9 +3,11 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {
-    generateMessage
-} = require('./modules/message');
+const {generateMessage} = require('./modules/message');
+const {userJoin, getUser, deleteUser, getUsersInRoom, countUsersInRoom} = require('./modules/users');
+const { newRoom, isNewRoom, getAllRooms, deleteRoom} = require('./modules/rooms');
+
+
 const publicPath = path.join(__dirname, './public');
 const port = process.env.PORT || 3000;
 let app = express();
@@ -16,51 +18,65 @@ let broadcaster;
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-        // console.log(socket.id + ": connected");
-        // for(let s of io.of('/').sockets){
-        //     console.log(s[1].id);
-        // }
-        // console.log(io.of('/').sockets[0]);
 
-    socket.on('disconnect', function(data){
-        // console.log(io.sockets.adapter.rooms);
-        // console.log(socket.id + ": was disconnected");
-        socket.broadcast.emit('delete_cursor', {delete_id: socket.id});
-        socket.broadcast.emit('delete_user', {delete_id: socket.id});
-
+    socket.on('getRooms', () => {
+        console.log("Rooms requestet");
+        socket.emit('giveRooms', getAllRooms());
     });
 
-    //New Client wants all Users --> broadcast to all for req info
-    socket.on('getAllUsers', function(){
-        socket.broadcast.emit('req_user', {newUser_id: socket.id});
-    });
-    //get user Data for new User
-    socket.on('user_data', function(data){
-        socket.to(data.reqID).emit('listUser', {userId: socket.id, user: data});
-    });
+    socket.on("join room", (userName, userColor, roomName) => {
+        const user = userJoin(socket.id, userName, userColor, roomName);
+ 
+       
+        socket.join(roomName);
+        if(isNewRoom(roomName)){
+            newRoom(roomName);
+            //update all room lists
+            io.emit('newRoomList', getAllRooms());
+        }
+        //Welcome Message to new User
+        socket.emit('newMessage', generateMessage("#000000", "server", "Welcome to Jam.io"));
 
-    //curser stuff
-    socket.on('mouse_activity', function(data){
-        socket.broadcast.emit('all_mouse_activity', {session_id: socket.id, cords: data});
-    });
+        //Message to all other Users that a new User joined
+        socket.broadcast.to(user.room).emit('newMessage', generateMessage("#000000", "server", `User: ${userName} joined the room`));
 
-    //Welcome Message to new User
-    socket.emit('newMessage', generateMessage("#000000", "server", "Welcome to Jam.io"));
+        //Update all user lists in room
+        io.to(user.room).emit('newUserList', getUsersInRoom(roomName));
 
-    //Message to all other Users that a new User joined
-    socket.broadcast.emit('newMessage', generateMessage("#000000", "server", "New User Joined"));
+    })
 
-    //add new User to list on connect
-    socket.on('newUser', function(data){
-        socket.broadcast.emit('addNewUser', {session_id: socket.id, user: data});
-    });
-
-    //Message from User(Client), broadcasted to all users
+    //Message from User(Client), broadcasted to all users of room
     socket.on('createMessage', (message, callback) => {
         // console.log("createMessage", message);
-        io.emit('newMessage', generateMessage(message.color, message.from, message.text));
-        callback("This is Server");
+        io.to(message.room).emit('newMessage', generateMessage(message.color, message.from, message.text, message.room));
     });
+
+    socket.on('disconnect', () => {
+        const user = getUser(socket.id);
+        deleteUser(socket.id);
+        if(user != undefined){
+          io.to(user.room).emit('newUserList', getUsersInRoom(user.room));  
+        }
+        if(user != undefined){
+            if(countUsersInRoom(user.room) == 0){
+                deleteRoom(user.room);
+                io.emit('newRoomList', getAllRooms());
+            }
+        }
+        
+        socket.broadcast.emit('delete_cursor', {delete_id: socket.id});
+        socket.broadcast.emit('delete_user', {delete_id: socket.id});
+    });
+
+
+
+    //curser stuff
+    socket.on('mouse_activity', function(room, data){
+        socket.broadcast.to(room).emit('all_mouse_activity', {session_id: socket.id, cords: data});
+    });
+
+
+
 
     socket.on('keyboard', function (blob) {
         // can choose to broadcast it to whoever you want

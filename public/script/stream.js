@@ -199,6 +199,7 @@ document.addEventListener("keyup", (e) => {
 });
 
 document.addEventListener("mouseup", () => {
+    someKeyIsPressed = false;
     lastKey = clickedKeyKeyboard.pop();
     stopKey(lastKey);
     socket.emit('releasedKeyKeyboard', lastKey);

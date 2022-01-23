@@ -15,7 +15,7 @@ let app = express();
 let server = http.createServer(app);
 let io = socketIO(server);
 let broadcaster;
-let broadcasterRoom = [];
+const broadcasterMap = new Map();
 
 app.use(express.static(publicPath));
 
@@ -102,46 +102,34 @@ io.on('connection', (socket) => {
     });
 
     socket.on("broadcaster", (room) => {
-        broadcaster = socket.id;
-        broadcasterRoom = room;
-        console.log(broadcaster + " started a broadcast in room " + broadcasterRoom);
+        broadcasterMap.set(room, socket.id);
+        console.log(broadcasterMap);
+        console.log(broadcasterMap.get(room) + " started a broadcast in room " + room);
         socket.broadcast.to(room).emit("broadcaster");
     });
 
     socket.on("watcher", (room) => {
-        console.log("new Watcher sees: " + broadcaster + " in room " + broadcasterRoom);
-        if (room == broadcasterRoom) {
-            socket.to(room).to(broadcaster).emit("watcher", socket.id);
-        }
-
-    });
-
-    socket.on("disconnectPeer", (room) => {
-        if (room == broadcasterRoom) {
-            socket.to(room).to(broadcaster).emit("peerDisconnected", socket.id);
+        if (broadcasterMap.get(room) != undefined) {
+            console.log("new Watcher sees: " + broadcasterMap.get(room) + " in room " + room);
+            socket.to(room).to(broadcasterMap.get(room)).emit("watcher", socket.id);
         }
   
     });
 
+    socket.on("disconnectPeer", (room) => {
+        socket.to(room).to(broadcasterMap.get(room)).emit("peerDisconnected", socket.id);
+    });
+
     socket.on("offer", (room, id, message) => {
-        if (room == broadcasterRoom) {
-            socket.to(room).to(id).emit("offer", socket.id, message);
-        }
-      
+        socket.to(room).to(id).emit("offer", socket.id, message);
     });
 
     socket.on("answer", (room, id, message) => {
-        if (room == broadcasterRoom) {
-            socket.to(room).to(id).emit("answer", socket.id, message);
-        }
-    
+        socket.to(room).to(id).emit("answer", socket.id, message);
     });
 
     socket.on("candidate", (room, id, message) => {
-        if (room == broadcasterRoom) {
-            socket.to(room).to(id).emit("candidate", socket.id, message);
-        }
-      
+        socket.to(room).to(id).emit("candidate", socket.id, message);
     });
 
 });

@@ -208,6 +208,7 @@ const playKey = (key) => {
   }
 
   keysKeyboard[key].element.classList.add("pressed");
+  
   pressedNotes.set(key, osc);
   pressedNotes.get(key).start();
 
@@ -240,8 +241,13 @@ const stopKey = (key) => {
 for (const [key, {element}] of Object.entries(keysKeyboard)) {
   
   element.addEventListener("mousedown", () => {
-    clickedKeyKeyboard.push(key);
 
+    someKeyIsPressed = true;
+
+    if(!clickedKeyKeyboard.includes(key)){
+      clickedKeyKeyboard.push(key);
+    }
+   
     playKey(key);
     
     socket.emit('keypressedKeyboard', clickedKeyKeyboard);

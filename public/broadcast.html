@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Broadcaster</title>
+    <meta charset="UTF-8" />
+    <link rel="shortcut icon" href="#">
+  </head>
+  <body>
+    <section class="select">
+      <label for="audioSource">Audio source: </label>
+      <select id="audioSource"></select>
+    </section>
+
+    <section class="select">
+      <label for="videoSource">Video source: </label>
+      <select id="videoSource"></select>
+    </section>
+
+    <video playsinline autoplay muted width="200px" height="200px"></video>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/script/broadcast.js"></script>
+  </body>
+</html>

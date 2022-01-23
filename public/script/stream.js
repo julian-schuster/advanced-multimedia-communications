@@ -5,6 +5,28 @@ var chunks = [];
 var recording = false;
 var someKeyIsPressed = false;
 
+//Initialisierung von Variablen für broadcasting video stream
+const peerConnections = {};
+const configBroadcast = {
+  iceServers: [
+    { 
+      "urls": "stun:stun.l.google.com:19302",
+    },
+    // { 
+    //   "urls": "turn:TURN_IP?transport=tcp",
+    //   "username": "TURN_USERNAME",
+    //   "credential": "TURN_CREDENTIALS"
+    // }
+  ]
+};
+
+var socketBroadcast = io.connect(window.location.origin);
+var videoElement;
+var audioSelect;
+var videoSelect;
+
+// MediaRecorder for Keyboard
+
 mediaRecorder = new MediaRecorder(dest.stream);
 
 mediaRecorder.ondataavailable = function (evt) {
@@ -110,6 +132,9 @@ socket.on('drumKey', function (clickedKeyDrums) {
         let key = document.querySelector(`.key[data-key="${keyCode}"]`)
     
         key.classList.add('playing');
+        setTimeout(function() {
+            key.classList.remove('playing');
+        }, 200);
     });
   
 
@@ -143,6 +168,10 @@ document.addEventListener("keydown", (e) => {
         audio.currentTime = 0;
         audio.play();
         key.classList.add('playing');
+        
+        setTimeout(function() {
+            key.classList.remove('playing');
+        }, 200);
 
         clickedKeyDrums.push(key.querySelector('div').innerHTML);
 
@@ -177,7 +206,31 @@ document.addEventListener("keyup", (e) => {
 });
 
 document.addEventListener("mouseup", () => {
+    
     lastKey = clickedKeyKeyboard.pop();
     stopKey(lastKey);
     socket.emit('releasedKeyKeyboard', lastKey);
+});
+
+$( "#takeSpotlight" ).click(function() {
+    $.ajax({url: "/broadcast.html", success: function(result){
+        $("#broadcasterHidden").append((result));
+        if (window.stream) {
+            window.stream.getTracks().forEach(track => {
+              track.enabled = true;
+            });
+        }
+    }});
+  });
+
+$.ajax({url: "/watch.html", success: function(result){
+    $("#broadcaster").append((result));
+}});
+        
+$("#leaveSpotlight").click(function() {
+    if (window.stream) {
+        window.stream.getTracks().forEach(track => {
+          track.enabled = false;
+        });
+    }
 });

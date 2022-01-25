@@ -121,6 +121,7 @@ audio {
   align-items: center;
   min-height: 10vh;
   flex-wrap: wrap;
+  position: relative;
 }
 
 .key {
@@ -157,70 +158,86 @@ div:focus {
   display: block;
   margin-left: auto;
   margin-right: auto;
-
 }
 
 #drumkitFrame {
-  width: 50%;
-  padding-top: 2%;
+  width: 550px;
+  height: 550px;
   margin-left: auto;
   margin-right: auto;
-
-
+  float: left;
 }
 
 #keyboardFrame {
-  padding-top: 1%;
-  padding-bottom: 2%;
-  width: 50%;
+  width: 44rem;
   margin-left: auto;
   margin-right: auto;
-
+  float: left;
 }
 
-
 #drumA {
-  margin-bottom: 7%;
+  position: absolute;
+  margin-bottom: 30%;
+  margin-left: 10%;
 }
 
 #drumS {
-  margin-bottom: 14%;
-  margin-right: 12%;
+  position: absolute;
+  margin-bottom: 55%;
+  margin-right: 50%;
 }
 
 #drumD {
-  margin-bottom: 7%;
-  margin-left: 7%;
+  position: absolute;
+  margin-bottom: 30%;
+  margin-left: 30%;
 }
 
 #drumF {
-  margin-bottom: 35%;
-  margin-right: 20%;
+  position: absolute;
+  margin-bottom: 110%;
+  margin-right: 60%;
 }
 
 #drumG {
-  margin-bottom: 20%;
-  margin-left: 2%;
+  position: absolute;
+  margin-bottom: 70%;
+  margin-left: 5%;
 }
 
 #drumH {
-  margin-bottom: 55%;
-  margin-left: 17%
+  position: absolute;
+  margin-bottom: 170%;
+  margin-left: 50%
 }
 
 #drumJ {
-  margin-bottom: 33.5%;
-  margin-right: 7%;
+  position: absolute;
+  margin-bottom: 105%;
+  margin-right: 20%;
 }
 
 #drumK {
-  margin-bottom: 37%;
-  margin-left: 13%;
+  position: absolute;
+  margin-bottom: 115%;
+  margin-left: 40%;
 }
 
 #drumL {
-  margin-bottom: 7%;
-  margin-left: 14%;
+  position: absolute;
+  margin-bottom: 30%;
+  margin-left: 50%;
+}
+
+#broadcastborder {
+  border-style: solid;
+  width: 420px;
+  margin-left: 35%;
+  float: left;
+}
+
+#broadcaster {
+  text-align: center;
 }
 
 #videoWatcher {

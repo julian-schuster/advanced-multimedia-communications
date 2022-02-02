@@ -162,15 +162,13 @@ div:focus {
 #drumkitFrame {
   width: 550px;
   height: 550px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
   float: left;
 }
 
 #keyboardFrame {
   width: 44rem;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
   float: left;
 }
 
@@ -231,8 +229,11 @@ div:focus {
 #broadcastborder {
   border-style: solid;
   width: 420px;
-  margin-left: 35%;
-  float: left;
+  margin-right: 300px;
+  float: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 #broadcaster {
@@ -374,4 +375,9 @@ div:focus {
 .btn-success:hover,
 .btn-success:active {
   background-color: #4b9925 !important;
+}
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
 }

@@ -133,8 +133,8 @@ io.on('connection', (socket) => {
         socket.to(room).to(id).emit("candidate", socket.id, message);
     });
 
-    socket.on("refreshStreams", (room) => {
-        socket.to(room).emit("refreshStream");
+    socket.on("refreshStreams", (room, broadcaster) => {
+        socket.to(room).emit("refreshStream", broadcaster);
     });
 
 });

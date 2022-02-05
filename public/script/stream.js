@@ -222,12 +222,14 @@ $("#takeSpotlight").click(function () {
         })
         .done(function (data) {
             $("#broadcasterHidden").append((data));
+            $("#inSpotlight").innerHTML = data.broadcaster;
             if (window.stream) {
                 window.stream.getTracks().forEach(track => {
                     track.enabled = true;
                 });
             }
-            socket.emit('refreshStreams', room);
+            $("#currentBroadcaster").html(name);
+            socket.emit('refreshStreams', room, name);
         });
 });
 
@@ -241,6 +243,7 @@ $("#leaveSpotlight").click(function () {
 });
 
 setTimeout(function () {
+
     $.get("/watch.html", {
             room: room
         })
@@ -249,8 +252,7 @@ setTimeout(function () {
         });
 }, 250);
 
-
-socket.on('refreshStream', function () {
+socket.on('refreshStream', function (broadcaster) {
     //console.log("New Broadcaster detected -> restart stream");
 
     if (window.stream) {
@@ -266,6 +268,7 @@ socket.on('refreshStream', function () {
             })
             .done(function (data) {
                 $("#broadcaster").append((data));
+                $("#currentBroadcaster").html(broadcaster);
             });
     }, 4000);
 

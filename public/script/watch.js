@@ -1,21 +1,13 @@
-let peerConnection;
-const config = {
-  iceServers: [
-      { 
-        "urls": "stun:stun.l.google.com:19302",
-      },
-      // { 
-      //   "urls": "turn:TURN_IP?transport=tcp",
-      //   "username": "TURN_USERNAME",
-      //   "credential": "TURN_CREDENTIALS"
-      // }
-  ]
+config = {
+  iceServers: [{
+    "urls": "stun:stun.l.google.com:19302",
+  }]
 };
 
-const socketWatch = io.connect(window.location.origin);
-const video = document.querySelector("video");
-const toggleAudioButton = document.querySelector("#toggle-audio");
-const disconnectPeerButton = document.querySelector("#disconnectPeer");
+socketWatch = io.connect(window.location.origin);
+video = document.querySelector("video");
+toggleAudioButton = document.querySelector("#toggle-audio");
+disconnectPeerButton = document.querySelector("#disconnectPeer");
 toggleAudioButton.addEventListener("click", toggleAudio)
 disconnectPeerButton.addEventListener("click", disconnectPeer)
 
@@ -26,14 +18,14 @@ socketWatch.on("offer", (id, description) => {
     .then(() => peerConnection.createAnswer())
     .then(sdp => peerConnection.setLocalDescription(sdp))
     .then(() => {
-      socketWatch.emit("answer", room, id, peerConnection.localDescription);
+      socketWatch.emit("answer", getUrlVars()["room"], id, peerConnection.localDescription);
     });
   peerConnection.ontrack = event => {
     video.srcObject = event.streams[0];
   };
   peerConnection.onicecandidate = event => {
     if (event.candidate) {
-      socketWatch.emit("candidate", room, id, event.candidate);
+      socketWatch.emit("candidate", getUrlVars()["room"], id, event.candidate);
     }
   };
 });
@@ -45,11 +37,11 @@ socketWatch.on("candidate", (id, candidate) => {
 });
 
 socketWatch.on("connect", () => {
-  socketWatch.emit("watcher", room);
+  socketWatch.emit("watcher", getUrlVars()["room"]);
 });
 
 socketWatch.on("broadcaster", () => {
-  socketWatch.emit("watcher", room);
+  socketWatch.emit("watcher", getUrlVars()["room"]);
 });
 
 function toggleAudio() {
@@ -58,14 +50,28 @@ function toggleAudio() {
   } else {
     video.muted = true;
   }
-  
+
 }
 
-function disconnectPeer(){
-  socketWatch.emit("disconnectPeer", room);
+function disconnectPeer() {
+  socketWatch.emit("disconnectPeer", getUrlVars()["room"]);
 }
 
 window.onunload = window.onbeforeunload = () => {
   socketWatch.close();
   peerConnection.close();
 };
+
+
+// Read a page's GET URL variables and return them as an associative array.
+function getUrlVars() {
+  var vars = [],
+    hash;
+  var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+  for (var i = 0; i < hashes.length; i++) {
+    hash = hashes[i].split('=');
+    vars.push(hash[0]);
+    vars[hash[0]] = hash[1];
+  }
+  return vars;
+}

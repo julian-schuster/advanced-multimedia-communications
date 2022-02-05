@@ -106,6 +106,7 @@ io.on('connection', (socket) => {
         console.log(broadcasterMap);
         console.log(broadcasterMap.get(room) + " started a broadcast in room " + room);
         socket.broadcast.to(room).emit("broadcaster");
+        socket.emit("broadcaster", socket.id);
     });
 
     socket.on("watcher", (room) => {
@@ -113,7 +114,7 @@ io.on('connection', (socket) => {
             console.log("new Watcher sees: " + broadcasterMap.get(room) + " in room " + room);
             socket.to(room).to(broadcasterMap.get(room)).emit("watcher", socket.id);
         }
-  
+        socket.emit("watcher", socket.id);
     });
 
     socket.on("disconnectPeer", (room) => {
@@ -130,6 +131,10 @@ io.on('connection', (socket) => {
 
     socket.on("candidate", (room, id, message) => {
         socket.to(room).to(id).emit("candidate", socket.id, message);
+    });
+
+    socket.on("refreshStreams", (room, broadcaster) => {
+        socket.to(room).emit("refreshStream", broadcaster);
     });
 
 });

@@ -1,4 +1,4 @@
-//socketBroadcast = io.connect(window.location.origin);
+socketBroadcast = io.connect(window.location.origin);
 
 socketBroadcast.on("answer", (id, description) => {
   peerConnections[id].setRemoteDescription(description);
@@ -14,7 +14,7 @@ socketBroadcast.on("watcher", id => {
 
   peerConnection.onicecandidate = event => {
     if (event.candidate) {
-      socketBroadcast.emit("candidate", room, id, event.candidate);
+      socketBroadcast.emit("candidate", getUrlVars()["room"], id, event.candidate);
     }
   };
 
@@ -22,7 +22,7 @@ socketBroadcast.on("watcher", id => {
     .createOffer()
     .then(sdp => peerConnection.setLocalDescription(sdp))
     .then(() => {
-      socketBroadcast.emit("offer", room, id, peerConnection.localDescription);
+      socketBroadcast.emit("offer", getUrlVars()["room"], id, peerConnection.localDescription);
     });
 });
 
@@ -33,9 +33,9 @@ socketBroadcast.on("candidate", (id, candidate) => {
 
 socketBroadcast.on("peerDisconnected", id => {
 
-    //console.log("Watcher with id: " + id + " disconnected");
-    peerConnections[id].close();
-    delete peerConnections[id];
+  //console.log("Watcher with id: " + id + " disconnected");
+  peerConnections[id].close();
+  delete peerConnections[id];
 
 });
 
@@ -83,8 +83,16 @@ function getStream() {
   const audioSource = audioSelect.value;
   const videoSource = videoSelect.value;
   const constraints = {
-    audio: { deviceId: audioSource ? { exact: audioSource } : undefined },
-    video: { deviceId: videoSource ? { exact: videoSource } : undefined }
+    audio: {
+      deviceId: audioSource ? {
+        exact: audioSource
+      } : undefined
+    },
+    video: {
+      deviceId: videoSource ? {
+        exact: videoSource
+      } : undefined
+    }
   };
   return navigator.mediaDevices
     .getUserMedia(constraints)
@@ -101,9 +109,22 @@ function gotStream(stream) {
     option => option.text === stream.getVideoTracks()[0].label
   );
   videoElement.srcObject = stream;
-  socketBroadcast.emit("broadcaster", room);
+  socketBroadcast.emit("broadcaster", getUrlVars()["room"]);
 }
 
 function handleError(error) {
   console.error("Error: ", error);
+}
+
+// Read a page's GET URL variables and return them as an associative array.
+function getUrlVars() {
+  var vars = [],
+    hash;
+  var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+  for (var i = 0; i < hashes.length; i++) {
+    hash = hashes[i].split('=');
+    vars.push(hash[0]);
+    vars[hash[0]] = hash[1];
+  }
+  return vars;
 }

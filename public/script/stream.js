@@ -5,25 +5,18 @@ var chunks = [];
 var recording = false;
 var someKeyIsPressed = false;
 
-//Initialisierung von Variablen für broadcasting video stream
-const peerConnections = {};
-const configBroadcast = {
-  iceServers: [
-    { 
-      "urls": "stun:stun.l.google.com:19302",
-    },
-    // { 
-    //   "urls": "turn:TURN_IP?transport=tcp",
-    //   "username": "TURN_USERNAME",
-    //   "credential": "TURN_CREDENTIALS"
-    // }
-  ]
+var peerConnection;
+
+var config = {
+    iceServers: [{
+        "urls": "stun:stun.l.google.com:19302",
+    }]
 };
 
-var socketBroadcast = io.connect(window.location.origin);
-var videoElement;
-var audioSelect;
-var videoSelect;
+var socketWatch = io.connect(window.location.origin);
+var video = document.querySelector("video");
+var toggleAudioButton = document.querySelector("#toggle-audio");
+var disconnectPeerButton = document.querySelector("#disconnectPeer");
 
 // MediaRecorder for Keyboard
 
@@ -34,15 +27,15 @@ mediaRecorder.ondataavailable = function (evt) {
     chunks.push(evt.data);
 
     if (!someKeyIsPressed) {
-       
+
         let blob = new Blob(chunks, {
             'type': 'audio/wav'
         });
-    
+
         if (blob.size > 0) {
-          socket.emit('keyboard', room, blob);
+            socket.emit('keyboard', room, blob);
         }
-   
+
         clickedKeyKeyboard = [];
         chunks = [];
     }
@@ -66,20 +59,20 @@ socket.on('keyboardKey', function (clickedKeyKeyboard) {
         if (!keysKeyboard[element]) {
             return;
         }
-        
+
         keysKeyboard[element].element.classList.add("pressed");
-        
+
     });
 });
 
 socket.on('keyboardReleasedKey', function (key) {
 
-        if (!keysKeyboard[key]) {
-          return;
-        }
-        
-        keysKeyboard[key].element.classList.remove("pressed");
-        
+    if (!keysKeyboard[key]) {
+        return;
+    }
+
+    keysKeyboard[key].element.classList.remove("pressed");
+
 });
 
 // When the client receives a audio it will play the sound
@@ -128,12 +121,12 @@ socket.on('drumKey', function (clickedKeyDrums) {
             default:
                 return;
         }
-    
+
         let key = document.querySelector(`.key[data-key="${keyCode}"]`)
-    
+
         key.classList.add('playing');
     });
-  
+
 
 });
 
@@ -147,13 +140,13 @@ document.addEventListener("keydown", (e) => {
         }
 
         clickedKeyKeyboard.push(key);
-        
+
         someKeyIsPressed = true;
 
         playKey(key);
 
         socket.emit('keypressedKeyboard', room, clickedKeyKeyboard);
-        
+
     } else if (activateDrums) {
 
         if (!document.querySelector(`audio[data-key="${e.keyCode}"]`)) {
@@ -199,34 +192,57 @@ document.addEventListener("keyup", (e) => {
 });
 
 document.addEventListener("mouseup", () => {
-    
+
     lastKey = clickedKeyKeyboard.pop();
     stopKey(lastKey);
     socket.emit('releasedKeyKeyboard', room, lastKey);
 });
 
-$( "#takeSpotlight" ).click(function() {
-    $.ajax({url: "/broadcast.html", success: function(result){
-        $("#broadcasterHidden").append((result));
-        if (window.stream) {
-            window.stream.getTracks().forEach(track => {
-              track.enabled = true;
-            });
-        }
-    }});
-  });
+$("#takeSpotlight").click(function () {
+    $.get("/broadcast.html", {
+            room: room
+        })
+        .done(function (data) {
+            $("#broadcasterHidden").append((data));
+            if (window.stream) {
+                window.stream.getTracks().forEach(track => {
+                    track.enabled = true;
+                });
+            }
+            socket.emit('refreshStreams', room);
+        });
+});
 
 
-$("#leaveSpotlight").click(function() {
+$("#leaveSpotlight").click(function () {
     if (window.stream) {
         window.stream.getTracks().forEach(track => {
-          track.enabled = false;
+            track.enabled = false;
         });
     }
 });
 
-setTimeout(function() {
-    $.ajax({url: "/watch.html", success: function(result){
-        $("#broadcaster").append((result));
-    }});
+setTimeout(function () {
+    $.get("/watch.html", {
+            room: room
+        })
+        .done(function (data) {
+            $("#broadcaster").append((data));
+        });
 }, 250);
+
+
+socket.on('refreshStream', function () {
+    //console.log("New Broadcaster detected -> restart stream");
+
+    setTimeout(function () {
+        $("#broadcaster").empty();
+        $.get("/watch.html", {
+                room: room
+            })
+            .done(function (data) {
+                $("#broadcaster").append((data));
+            });
+    }, 5000);
+
+});

@@ -1,24 +1,5 @@
 socketBroadcast = io.connect(window.location.origin);
 
-//Initialisierung von Variablen für broadcasting video stream
-const peerConnections = {};
-const configBroadcast = {
-  iceServers: [{
-      "urls": "stun:stun.l.google.com:19302",
-    },
-    // { 
-    //   "urls": "turn:TURN_IP?transport=tcp",
-    //   "username": "TURN_USERNAME",
-    //   "credential": "TURN_CREDENTIALS"
-    // }
-  ]
-};
-
-var socketBroadcast = io.connect(window.location.origin);
-var videoElement;
-var audioSelect;
-var videoSelect;
-
 socketBroadcast.on("answer", (id, description) => {
   peerConnections[id].setRemoteDescription(description);
 });

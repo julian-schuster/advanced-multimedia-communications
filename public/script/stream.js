@@ -5,6 +5,8 @@ var chunks = [];
 var recording = false;
 var someKeyIsPressed = false;
 
+//Initialisierung von Variablen für watch video stream
+
 var peerConnection;
 
 var config = {
@@ -17,6 +19,22 @@ var socketWatch = io.connect(window.location.origin);
 var video = document.querySelector("video");
 var toggleAudioButton = document.querySelector("#toggle-audio");
 var disconnectPeerButton = document.querySelector("#disconnectPeer");
+
+
+//Initialisierung von Variablen für broadcasting video stream
+const peerConnections = {};
+const configBroadcast = {
+    iceServers: [{
+            "urls": "stun:stun.l.google.com:19302",
+        }
+    ]
+};
+
+var socketBroadcast = io.connect(window.location.origin);
+var videoElement;
+var audioSelect;
+var videoSelect;
+
 
 // MediaRecorder for Keyboard
 
@@ -235,6 +253,12 @@ setTimeout(function () {
 socket.on('refreshStream', function () {
     //console.log("New Broadcaster detected -> restart stream");
 
+    if (window.stream) {
+        window.stream.getTracks().forEach(track => {
+            track.enabled = false;
+        });
+    }
+
     setTimeout(function () {
         $("#broadcaster").empty();
         $.get("/watch.html", {
@@ -243,6 +267,6 @@ socket.on('refreshStream', function () {
             .done(function (data) {
                 $("#broadcaster").append((data));
             });
-    }, 5000);
+    }, 4000);
 
 });

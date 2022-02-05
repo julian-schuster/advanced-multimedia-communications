@@ -233,7 +233,7 @@ div:focus {
   float: right;
   position: absolute;
   bottom: 0;
-  right: 0;
+  right: 50px;
 }
 
 #broadcaster {
@@ -327,9 +327,81 @@ div:focus {
 #rooms{
   margin-bottom: 15px;
 }
-
-#message-form {}
-
+#backBtn{
+  width:100%;
+}
+.roomSelectSidebar{
+  width:90%;
+  margin-left:5%;
+}
+#rooms h1 {
+  margin-left: 20px;
+}
+#btnBox{
+  width: 100%;
+  height: 38px;
+  background-color: black;
+}
+#sidebarHandler{
+  position: absolute;
+  left: -50px;
+  top: 38px;
+  width: 50px;
+  height: 50px;
+  border: 2px solid black;
+  background-color: white;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius:25px;
+}
+#arrow{
+  border: solid black;
+  border-width: 0 8px 8px 0;
+  display: inline-block;
+  padding: 8px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  margin-top: 10px;
+  margin-left: 10px;
+}
+#camHandler{
+  position: absolute;
+  left: 160px;
+  top: -50px;
+  width: 100px;
+  height: 50px;
+  border: 2px solid black;
+  background-color: white;
+  border-top-left-radius: 25px;
+  border-top-right-radius:25px;
+}
+#camHandler:hover,#sidebarHandler:hover{
+  background-color: red;
+  transition: background 0.5s ease;
+  cursor: pointer;
+}
+#cArrow{
+  border: solid black;
+  border-width: 0 8px 8px 0;
+  display: inline-block;
+  padding: 8px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  margin-top: 8px;
+  margin-left: 35px;
+}
+/*-------------------Login---------------*/
+.roomSelectLogin{
+  width:80%;
+}
+#roomInput{
+  margin-top: 10px;
+}
+#open{
+  margin-top: -5px;
+}
+#close{
+  margin-top: -5px;
+}
 /*-------------------PAGE STYLING; JULIAN PFOTEN WEG---------------*/
 
 .background {
@@ -379,5 +451,5 @@ div:focus {
 
 html, body {
     max-width: 100%;
-    overflow-x: hidden;
+    overflow: hidden;
 }

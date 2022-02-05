@@ -10,21 +10,21 @@
         <form action="/home.html" class="displayname">
           <label>Please choose <b>displayname</b> and <b>color</b></label>
           <div class="input-group mb-3">
-            <input type="text" class="form-control" id="name" name="name" value="Anonymous" maxlength="16" placeholder="Enter displayname...">
+            <input type="text" class="form-control" id="name" name="name" maxlength="16" placeholder="Enter displayname..." required="required" pattern="[A-Za-z0-9]{1,20}">
             
             <input type="color" class="form-control" value="#66cc33" id="colorWell" name="color">
             <div class="input-group-append">
               <button type="submit" class="btn btn-success" onclick="return next()">Join</button>
             </div>
           </div>
-          <select onchange="changeRoom()" id="roomSelect" class="form-select" aria-label="Default select example">
+          <select onchange="changeRoom()" id="roomSelect" class="form-select, roomSelectLogin" aria-label="Default select example">
             <option value="General" selected>General</option>
           </select>
           <button id="open" type="button" class="btn btn-success" onclick="openInput()">+</button>
           <button id="close" style="display: none;" type="button" class="btn btn-danger" onclick="closeInput()">-</button>
 
           <div style="display: none;" id="roomInput"  class="input-group mb-3">
-            <input id="newRoom" type="text" class="form-control" id="roomName" name="room" maxlength="16" value="General" placeholder="Enter roomname...">
+            <input id="newRoom" type="text" class="form-control" id="roomName" name="room" maxlength="16" value="General" placeholder="Enter roomname..." pattern="[A-Za-z0-9]{1,20}">
             <div class="input-group-append">
             </div>
           </div>

@@ -10,10 +10,15 @@
 
 <body">
     <div id="sidebar_right">
-        <button type="button" class="btn btn-danger" onclick="goBack()"> <- Back to Login</button>
+        <div id="sidebarHandler" onclick="handleSidebar()">
+            <i id="arrow"></i>
+        </div>
+        <div id="btnBox">
+                 <button type="button" id="backBtn" class="btn btn-outline-danger" onclick="goBack()"> <- Back to Login</button>
+        </div>
         <div id="rooms">
             <h1>Rooms</h1>
-            <select id="roomSelect" class="form-select" onchange="changeRoom()">
+            <select id="roomSelect" class="form-select, roomSelectSidebar" onchange="changeRoom()">
                 <option id="general" value="General">General</option>
             </select>
         </div>
@@ -131,8 +136,13 @@
         <audio data-key=76 id="sound_tink" src="sounds/virtual-drum_sounds_tink.wav"></audio>
         <audio data-key=75 id="sound_tom" src="sounds/virtual-drum_sounds_tom.wav"></audio>
 
+    </div>
 
+        <!-- Video Broadcast -->
         <div id="broadcastborder">
+            <div id="camHandler" onclick="handleCam()">
+                <i id="cArrow"></i>
+            </div>
             <h4>In the Spotlight: <div id="currentBroadcaster"></div></h4>
             <div id="broadcaster"></div>
             <div id="broadcasterHidden" hidden></div>
@@ -141,10 +151,6 @@
                  <button id="leaveSpotlight" class="btn btn-success">Leave the Spotlight!</button>
             </div>
         </div>
-
-    </div>
-
-
 
 </body>
 
@@ -155,6 +161,7 @@
 <script src="/script/keyboard.js"></script>
 <script src="/script/drums.js"></script>
 <script src="/script/cursor.js"></script>
+<script src="/script/ui.js"></script>
 
 <!-- global code -->
 <script src="/script/init.js"></script>

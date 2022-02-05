@@ -28,9 +28,9 @@ document.querySelector('#submit-btn').addEventListener('click', function (e) {
         from: name,
         text: document.querySelector('input[id="message-input"]').value,
         room: room
-    }, function () {
-        document.getElementById("message-input").value = "";
     });
+    document.getElementById("message-input").value = "";
+    
 });
 
 document.getElementById('message-form').onclick = function () {

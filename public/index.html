@@ -7,14 +7,14 @@
     <body>
       <div class="center">
         <h1 class="studyjam">Jam.io</h1>
-        <form action="/home.html" class="displayname">
+        
           <label>Please choose <b>displayname</b> and <b>color</b></label>
           <div class="input-group mb-3">
-            <input type="text" class="form-control" id="name" name="name" maxlength="16" placeholder="Enter displayname..." required="required" pattern="[A-Za-z0-9]{1,20}">
+            <input type="text" class="form-control" id="name" name="name" maxlength="16" placeholder="Enter displayname..." required="required" pattern="[A-Za-z0-9]{1,20}" onchange="updateName()">
             
-            <input type="color" class="form-control" value="#66cc33" id="colorWell" name="color">
+            <input type="color" class="form-control" value="#66cc33" id="colorWell" name="color" onchange="updateColor()">
             <div class="input-group-append">
-              <button type="submit" class="btn btn-success" onclick="return next()">Join</button>
+              <button id="submitBtn" type="button" class="btn btn-success" onclick="goNext()">Join</button>
             </div>
           </div>
           <select onchange="changeRoom()" id="roomSelect" class="form-select, roomSelectLogin" aria-label="Default select example">
@@ -24,12 +24,10 @@
           <button id="close" style="display: none;" type="button" class="btn btn-danger" onclick="closeInput()">-</button>
 
           <div style="display: none;" id="roomInput"  class="input-group mb-3">
-            <input id="newRoom" type="text" class="form-control" id="roomName" name="room" maxlength="16" value="General" placeholder="Enter roomname..." pattern="[A-Za-z0-9]{1,20}">
+            <input id="newRoom" type="text" class="form-control" name="room" maxlength="16" value="" placeholder="Enter roomname..." pattern="[A-Za-z0-9]{1,20}" onchange="updateNewRoom()">
             <div class="input-group-append">
             </div>
           </div>
-
-        </form>
       </div>
     </body>
     <script src="/socket.io/socket.io.js"></script>

@@ -22,8 +22,7 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
 
     socket.on('getRooms', () => {
-        console.log("Rooms requestet");
-        socket.emit('giveRooms', getAllRooms());
+        socket.emit('newRoomList', getAllRooms());
     });
 
     socket.on("join room", (userName, userColor, roomName) => {
@@ -43,6 +42,7 @@ io.on('connection', (socket) => {
         socket.broadcast.to(user.room).emit('newMessage', generateMessage("#000000", "server", `User: ${userName} joined the room`));
 
         //Update all user lists in room
+        io.emit('newRoomList', getAllRooms());
         io.to(user.room).emit('newUserList', getUsersInRoom(roomName));
 
     })
@@ -58,16 +58,19 @@ io.on('connection', (socket) => {
         deleteUser(socket.id);
         if(user != undefined){
           io.to(user.room).emit('newUserList', getUsersInRoom(user.room));  
-        }
-        if(user != undefined){
-            if(countUsersInRoom(user.room) == 0){
-                deleteRoom(user.room);
-                io.emit('newRoomList', getAllRooms());
-            }
-        }
-        
+        } 
         socket.broadcast.emit('delete_cursor', {delete_id: socket.id});
-        socket.broadcast.emit('delete_user', {delete_id: socket.id});
+        socket.broadcast.emit('delete_user', {delete_id: socket.id});  
+        io.emit('newRoomList', getAllRooms());
+        if(user != undefined){
+            setTimeout(function () {
+                if(countUsersInRoom(user.room) == 0){
+                    deleteRoom(user.room);
+                    io.emit('newRoomList', getAllRooms());
+                }
+            }, 10000);
+        }
+
     });
 
 

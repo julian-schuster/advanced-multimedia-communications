@@ -79,8 +79,6 @@ function changeRoom(){
     newRoom = document.getElementById("roomSelect").value;
     url = window.location.href
     newUrl = url.substr(0, url.indexOf(room)) + newRoom; 
-
-    alert("changing Room to: " + newRoom);
     window.location.href = newUrl;
 }
 

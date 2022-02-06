@@ -1,17 +1,29 @@
 let socket = io();
 var colorWell;
 
+var room = document.getElementById("roomSelect").value = "General";
+var name = document.getElementById("name").value;
+var color = document.getElementById("colorWell").value = "#69ce36" ;
+
 socket.emit("getRooms");
 
-socket.on('giveRooms', function(data){
+socket.on('newRoomList', function(data){
     renderRoomList(data)
 });
 
 function renderRoomList(data){
+    clearRoomList();
     data.forEach(room => {
         addRoom(room);
     })
 }
+function clearRoomList(){
+    const elements = document.getElementsByClassName("room_name");
+    while(elements.length > 0){
+        elements[0].parentNode.removeChild(elements[0]);
+    }
+}
+
 function addRoom(room){
     let option = document.createElement('option');
     option.classList.add("room_name");
@@ -52,20 +64,30 @@ function closeInput(){
     close.style.display= "none";
     input.style.display= "none";
 }
-function next(){
-    var input = document.getElementById("newRoom").value;
-    var name = document.getElementById("name").value;
-    if (input == ""){
-        input = "General"
-    }
-    if (name == ""){
-        name = "Anonymous"
+function goNext(){
+    color = document.getElementById("colorWell").value.replace("#","%23");
+    if(name==""){
+        alert("Bitte Name eingeben")
+    }else{
+        newUrl = "/home.html?name=" + name +"&color=" + color + "&room=" +room;
+        window.location.href = newUrl;
     }
 }
+
 function changeRoom(){
-    
-    var room = document.getElementById("roomSelect").value;
-    var input = document.getElementById("newRoom").value;
-    input = "";
-    input = room;
+    room = document.getElementById("roomSelect").value;
+    document.getElementById("newRoom").value = room;
+    // alert(room);
+}
+function updateNewRoom(){
+    room = document.getElementById("newRoom").value;
+    // alert(room);
+}
+function updateName(){
+    name = document.getElementById("name").value;
+    // alert(name);
+}
+function updateColor(){
+    color = document.getElementById("colorWell").value
+    // alert(color);
 }

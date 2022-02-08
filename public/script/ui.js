@@ -21,7 +21,7 @@ function handleCam() {
     cam = document.getElementById("broadcastborder");
     arrow = document.getElementById("cArrow");  
     if(camOpen){
-        cam.style.bottom = "-510px";
+        cam.style.bottom = "-462px";
         arrow.style.transform = "rotate(-135deg)";
         arrow.style.marginTop = "15px";
         camOpen=false;

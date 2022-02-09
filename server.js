@@ -91,11 +91,6 @@ io.on('connection', (socket) => {
         socket.broadcast.to(room).emit('keyboardSound', blob);
     });
 
-    socket.on('drums', function (room, blob) {
-        // can choose to broadcast it to whoever you want
-        socket.broadcast.to(room).emit('drumSound', blob);
-    });
-
     socket.on('keypressedKeyboard', (room, clickedKeyKeyboard) => {
         socket.broadcast.to(room).emit('keyboardKey', clickedKeyKeyboard);
     });

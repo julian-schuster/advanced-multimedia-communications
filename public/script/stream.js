@@ -94,17 +94,6 @@ socket.on('keyboardReleasedKey', function (key) {
 });
 
 // When the client receives a audio it will play the sound
-socket.on('drumSound', function (arrayBuffer) {
-
-    let blob = new Blob([arrayBuffer], {
-        'type': 'audio/wav; codecs=opus'
-    });
-    var audio = new Audio(window.URL.createObjectURL(blob));
-    audio.play();
-
-});
-
-// When the client receives a audio it will play the sound
 socket.on('drumKey', function (clickedKeyDrums) {
 
     clickedKeyDrums.forEach(element => {
@@ -142,6 +131,10 @@ socket.on('drumKey', function (clickedKeyDrums) {
 
         let key = document.querySelector(`.key[data-key="${keyCode}"]`)
 
+            let audio = document.querySelector(`audio[data-key="${keyCode}"]`);
+     
+        audio.currentTime = 0;
+        audio.play();
         key.classList.add('playing');
     });
 
@@ -178,16 +171,9 @@ document.addEventListener("keydown", (e) => {
         key.classList.add('playing');
 
         clickedKeyDrums.push(key.querySelector('div').innerHTML);
+        socket.emit('keypressedDrums', room, clickedKeyDrums);
+        clickedKeyDrums = [];
 
-        fetch(audio.src, {
-            method: "GET"
-        }).then((response) => {
-            response.blob().then(function (blob) {
-                socket.emit('drums', room, blob);
-                socket.emit('keypressedDrums', room, clickedKeyDrums);
-                clickedKeyDrums = [];
-            });
-        });
     }
 });
 

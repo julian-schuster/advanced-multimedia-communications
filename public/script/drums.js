@@ -96,16 +96,8 @@ for (const [key, {
     key.classList.add('playing');
 
     clickedKeyDrums.push(key.querySelector('div').innerHTML);
-
-    fetch(audio.src, {
-      method: "GET"
-    }).then((response) => {
-      response.blob().then(function (blob) {
-        socket.emit('keypressedDrums', room, clickedKeyDrums);
-        socket.emit('drums', room, blob);
-        clickedKeyDrums = [];
-      });
-    });
+    socket.emit('keypressedDrums', room, clickedKeyDrums);
+    clickedKeyDrums = [];
 
   });
 }

@@ -61,6 +61,7 @@ io.on('connection', (socket) => {
           io.to(user.room).emit('newUserList', getUsersInRoom(user.room));  
           if (broadcasterMapName.get(user.room) == user.userName) {
             broadcasterMapName.delete(user.room);
+            broadcasterMap.delete(user.room);
             socket.to(user.room).emit('resetStream');
           }
          
@@ -78,7 +79,6 @@ io.on('connection', (socket) => {
         }
 
     });
-
 
 
     //curser stuff
@@ -114,6 +114,7 @@ io.on('connection', (socket) => {
         broadcasterMap.set(room, socket.id);
         broadcasterMapName.set(room, broadcaster);
         console.log(broadcasterMapName);
+        console.log(broadcasterMap);
         console.log(broadcasterMapName.get(room) + " started a broadcast in room " + room);
         socket.broadcast.to(room).emit("broadcaster");
         socket.emit("broadcaster", socket.id);
@@ -150,6 +151,7 @@ io.on('connection', (socket) => {
     socket.on("resetStreams", (room, name) => {
         if (broadcasterMapName.get(room) == name) {
             broadcasterMapName.delete(room);
+            broadcasterMap.delete(room);
             socket.to(room).emit("resetStream");
         }
     });

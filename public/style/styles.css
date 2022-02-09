@@ -230,11 +230,11 @@ div:focus {
   border-style: solid;
   width: 420px;
   height: 460px;
-  margin-right: 300px;
-  float: right;
+  /* margin-right: 300px; */
+  /* float: right; */
   position: absolute;
   bottom: 0;
-  right: 50px;
+  /* right: 50px; */
 }
 
 #broadcaster {

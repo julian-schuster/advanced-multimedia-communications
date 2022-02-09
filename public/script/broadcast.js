@@ -34,6 +34,7 @@ socketBroadcast.on("candidate", (id, candidate) => {
 socketBroadcast.on("peerDisconnected", id => {
 
   //console.log("Watcher with id: " + id + " disconnected");
+  
   peerConnections[id].close();
   delete peerConnections[id];
 
@@ -109,7 +110,7 @@ function gotStream(stream) {
     option => option.text === stream.getVideoTracks()[0].label
   );
   videoElement.srcObject = stream;
-  socketBroadcast.emit("broadcaster", getUrlVars()["room"]);
+  socketBroadcast.emit("broadcaster", getUrlVars()["room"], name);
 }
 
 function handleError(error) {

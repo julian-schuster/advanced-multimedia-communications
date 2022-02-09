@@ -41,7 +41,7 @@ socketWatch.on("connect", () => {
 });
 
 socketWatch.on("broadcaster", () => {
-  socketWatch.emit("watcher", getUrlVars()["room"]);
+  socketWatch.emit("watcher", getUrlVars()["room"], name);
 });
 
 function toggleAudio() {

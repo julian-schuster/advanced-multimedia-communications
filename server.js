@@ -16,6 +16,7 @@ let server = http.createServer(app);
 let io = socketIO(server);
 let broadcaster;
 const broadcasterMap = new Map();
+const broadcasterMapName = new Map();
 
 app.use(express.static(publicPath));
 
@@ -58,6 +59,11 @@ io.on('connection', (socket) => {
         deleteUser(socket.id);
         if(user != undefined){
           io.to(user.room).emit('newUserList', getUsersInRoom(user.room));  
+          if (broadcasterMapName.get(user.room) == user.userName) {
+            broadcasterMapName.delete(user.room);
+            socket.to(user.room).emit('resetStream');
+          }
+         
         } 
         socket.broadcast.emit('delete_cursor', {delete_id: socket.id});
         socket.broadcast.emit('delete_user', {delete_id: socket.id});  
@@ -104,17 +110,18 @@ io.on('connection', (socket) => {
         socket.broadcast.to(room).emit('drumKey', clickedKeyDrums);
     });
 
-    socket.on("broadcaster", (room) => {
+    socket.on("broadcaster", (room, broadcaster) => {
         broadcasterMap.set(room, socket.id);
-        console.log(broadcasterMap);
-        console.log(broadcasterMap.get(room) + " started a broadcast in room " + room);
+        broadcasterMapName.set(room, broadcaster);
+        console.log(broadcasterMapName);
+        console.log(broadcasterMapName.get(room) + " started a broadcast in room " + room);
         socket.broadcast.to(room).emit("broadcaster");
         socket.emit("broadcaster", socket.id);
     });
 
     socket.on("watcher", (room) => {
         if (broadcasterMap.get(room) != undefined) {
-            console.log("new Watcher sees: " + broadcasterMap.get(room) + " in room " + room);
+            console.log("new Watcher sees: " + broadcasterMapName.get(room) + " in room " + room);
             socket.to(room).to(broadcasterMap.get(room)).emit("watcher", socket.id);
         }
         socket.emit("watcher", socket.id);
@@ -138,6 +145,17 @@ io.on('connection', (socket) => {
 
     socket.on("refreshStreams", (room, broadcaster) => {
         socket.to(room).emit("refreshStream", broadcaster);
+    });
+
+    socket.on("resetStreams", (room, name) => {
+        if (broadcasterMapName.get(room) == name) {
+            broadcasterMapName.delete(room);
+            socket.to(room).emit("resetStream");
+        }
+    });
+
+    socket.on("getBroadcasterName", (room) => {
+        socket.emit("getBroadcaster", broadcasterMapName.get(room));
     });
 
 });

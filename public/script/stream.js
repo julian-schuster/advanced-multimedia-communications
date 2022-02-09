@@ -217,6 +217,8 @@ document.addEventListener("mouseup", () => {
 });
 
 $("#takeSpotlight").click(function () {
+    
+
     $.get("/broadcast.html", {
             room: room
         })
@@ -229,15 +231,19 @@ $("#takeSpotlight").click(function () {
                 });
             }
             $("#currentBroadcaster").html(name);
+            socket.emit('setBroadcasterName', room, name);
             socket.emit('refreshStreams', room, name);
         });
 });
 
 
 $("#leaveSpotlight").click(function () {
+
     if (window.stream) {
         window.stream.getTracks().forEach(track => {
             track.enabled = false;
+            socket.emit('resetStreams', room, name);
+            socket.emit('getBroadcasterName', room);
         });
     }
 });
@@ -249,6 +255,7 @@ setTimeout(function () {
         })
         .done(function (data) {
             $("#broadcaster").append((data));
+            socket.emit('getBroadcasterName', room);
         });
 }, 250);
 
@@ -272,4 +279,17 @@ socket.on('refreshStream', function (broadcaster) {
             });
     }, 4000);
 
+});
+
+socket.on('resetStream', function () {
+    $("#currentBroadcaster").html("");
+    if (window.stream) {
+        window.stream.getTracks().forEach(track => {
+            track.enabled = false;
+        });
+    }
+});
+
+socket.on('getBroadcaster', function (broadcaster) {
+    $("#currentBroadcaster").html(broadcaster);
 });

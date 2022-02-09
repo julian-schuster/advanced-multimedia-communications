@@ -230,11 +230,11 @@ div:focus {
   border-style: solid;
   width: 420px;
   height: 460px;
-  margin-right: 300px;
-  float: right;
+  /* margin-right: 300px; */
+  /* float: right; */
   position: absolute;
   bottom: 0;
-  right: 50px;
+  /* right: 50px; */
 }
 
 #broadcaster {
@@ -242,33 +242,40 @@ div:focus {
   height: 270px;
 
 }
-#videoBtn{
+
+#videoBtn {
 
   height: 100px;
 
 }
-#currentBroadcaster{
-  height:30px;
+
+#currentBroadcaster {
+  height: 30px;
   font-size: 20pt;
   width: 100%;
   text-align: center;
 }
-#its{
+
+#its {
   margin-top: 5px;
   font-size: 15pt;
-  width:100%;
+  width: 100%;
   text-align: center;
 }
-#watcherStream{
-  background-color: darkgray;
+
+#watcherStream {
+  background-color: black;
   height: 260px;
 }
-#toggle-audio{
-margin-top: 50px;
-}
-#disconnectPeer{
+
+#toggle-audio {
   margin-top: 50px;
 }
+
+#disconnectPeer {
+  margin-top: 50px;
+}
+
 #videoWatcher {
   margin-left: 200px;
 }
@@ -324,6 +331,7 @@ margin-top: 50px;
   width: 100%;
   height: 52%;
 }
+
 #chatbox {
   background-color: white;
   width: 270px;
@@ -353,25 +361,30 @@ margin-top: 50px;
   padding: 5px;
 }
 
-#rooms{
+#rooms {
   margin-bottom: 15px;
 }
-#backBtn{
-  width:100%;
+
+#backBtn {
+  width: 100%;
 }
-.roomSelectSidebar{
-  width:90%;
-  margin-left:5%;
+
+.roomSelectSidebar {
+  width: 90%;
+  margin-left: 5%;
 }
+
 #rooms h1 {
   margin-left: 20px;
 }
-#btnBox{
+
+#btnBox {
   width: 100%;
   height: 38px;
   background-color: black;
 }
-#sidebarHandler{
+
+#sidebarHandler {
   position: absolute;
   left: -50px;
   top: 38px;
@@ -380,9 +393,10 @@ margin-top: 50px;
   border: 2px solid black;
   background-color: white;
   border-top-left-radius: 25px;
-  border-bottom-left-radius:25px;
+  border-bottom-left-radius: 25px;
 }
-#arrow{
+
+#arrow {
   border: solid black;
   border-width: 0 8px 8px 0;
   display: inline-block;
@@ -392,7 +406,8 @@ margin-top: 50px;
   margin-top: 10px;
   margin-left: 10px;
 }
-#camHandler{
+
+#camHandler {
   position: absolute;
   left: 160px;
   top: -50px;
@@ -401,14 +416,17 @@ margin-top: 50px;
   border: 2px solid black;
   background-color: white;
   border-top-left-radius: 25px;
-  border-top-right-radius:25px;
+  border-top-right-radius: 25px;
 }
-#camHandler:hover,#sidebarHandler:hover{
+
+#camHandler:hover,
+#sidebarHandler:hover {
   background-color: red;
   transition: background 0.5s ease;
   cursor: pointer;
 }
-#cArrow{
+
+#cArrow {
   border: solid black;
   border-width: 0 8px 8px 0;
   display: inline-block;
@@ -418,19 +436,24 @@ margin-top: 50px;
   margin-top: 8px;
   margin-left: 35px;
 }
+
 /*-------------------Login---------------*/
-.roomSelectLogin{
-  width:80%;
+.roomSelectLogin {
+  width: 80%;
 }
-#roomInput{
+
+#roomInput {
   margin-top: 10px;
 }
-#open{
+
+#open {
   margin-top: -5px;
 }
-#close{
+
+#close {
   margin-top: -5px;
 }
+
 /*-------------------PAGE STYLING; JULIAN PFOTEN WEG---------------*/
 
 .background {
@@ -478,7 +501,8 @@ margin-top: 50px;
   background-color: #4b9925 !important;
 }
 
-html, body {
-    max-width: 100%;
-    overflow: hidden;
+html,
+body {
+  max-width: 100%;
+  overflow: hidden;
 }

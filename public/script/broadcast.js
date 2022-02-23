@@ -5,7 +5,6 @@ socketBroadcast.on("answer", (id, description) => {
 });
 
 socketBroadcast.on("watcher", id => {
-  //console.log("New Watcher with id:"  + id);
   const peerConnection = new RTCPeerConnection(configBroadcast);
   peerConnections[id] = peerConnection;
 
@@ -13,6 +12,7 @@ socketBroadcast.on("watcher", id => {
   stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
 
   peerConnection.onicecandidate = event => {
+
     if (event.candidate) {
       socketBroadcast.emit("candidate", getUrlVars()["room"], id, event.candidate);
     }
@@ -28,23 +28,17 @@ socketBroadcast.on("watcher", id => {
 
 socketBroadcast.on("candidate", (id, candidate) => {
   peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
-  //console.log(peerConnections);
 });
 
 socketBroadcast.on("peerDisconnected", id => {
-
-  //console.log("Watcher with id: " + id + " disconnected");
-  
   peerConnections[id].close();
   delete peerConnections[id];
-
 });
 
 window.onunload = window.onbeforeunload = () => {
   socketBroadcast.close();
 };
 
-// Get camera and microphone
 videoElement = document.querySelector("video");
 audioSelect = document.querySelector("select#audioSource");
 videoSelect = document.querySelector("select#videoSource");
@@ -117,7 +111,6 @@ function handleError(error) {
   console.error("Error: ", error);
 }
 
-// Read a page's GET URL variables and return them as an associative array.
 function getUrlVars() {
   var vars = [],
     hash;

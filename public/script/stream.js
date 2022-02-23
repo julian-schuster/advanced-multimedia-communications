@@ -25,9 +25,8 @@ var disconnectPeerButton = document.querySelector("#disconnectPeer");
 const peerConnections = {};
 const configBroadcast = {
     iceServers: [{
-            "urls": "stun:stun.l.google.com:19302",
-        }
-    ]
+        "urls": "stun:stun.l.google.com:19302",
+    }]
 };
 
 var socketBroadcast = io.connect(window.location.origin);
@@ -46,9 +45,7 @@ mediaRecorder.ondataavailable = function (evt) {
 
     if (!someKeyIsPressed) {
 
-        let blob = new Blob(chunks, {
-            'type': 'audio/wav'
-        });
+        let blob = new Blob(chunks);
 
         if (blob.size > 0) {
             socket.emit('keyboard', room, blob);
@@ -60,17 +57,13 @@ mediaRecorder.ondataavailable = function (evt) {
 
 }
 
-// When the client receives a audio it will play the sound
 socket.on('keyboardSound', function (arrayBuffer) {
-    let blob = new Blob([arrayBuffer], {
-        'type': 'audio/ogg; codecs=opus'
-    });
+    let blob = new Blob([arrayBuffer]);
 
     var audio = new Audio(window.URL.createObjectURL(blob));
     audio.play();
 });
 
-// When the client receives a key it will trigger the key
 socket.on('keyboardKey', function (clickedKeyKeyboard) {
 
     clickedKeyKeyboard.forEach(element => {
@@ -93,52 +86,13 @@ socket.on('keyboardReleasedKey', function (key) {
 
 });
 
-// When the client receives a audio it will play the sound
 socket.on('drumKey', function (clickedKeyDrums) {
+    let key = document.querySelector(`.key[data-key="${clickedKeyDrums}"]`)
+    let audio = document.querySelector(`audio[data-key="${clickedKeyDrums}"]`);
 
-    clickedKeyDrums.forEach(element => {
-        switch (element) {
-            case "A":
-                keyCode = 65;
-                break;
-            case "S":
-                keyCode = 83;
-                break;
-            case "D":
-                keyCode = 68;
-                break;
-            case "F":
-                keyCode = 70;
-                break;
-            case "G":
-                keyCode = 71;
-                break;
-            case "H":
-                keyCode = 72;
-                break;
-            case "J":
-                keyCode = 74;
-                break;
-            case "K":
-                keyCode = 75;
-                break;
-            case "L":
-                keyCode = 76;
-                break;
-            default:
-                return;
-        }
-
-        let key = document.querySelector(`.key[data-key="${keyCode}"]`)
-
-            let audio = document.querySelector(`audio[data-key="${keyCode}"]`);
-     
-        audio.currentTime = 0;
-        audio.play();
-        key.classList.add('playing');
-    });
-
-
+    audio.currentTime = 0;
+    audio.play();
+    key.classList.add('playing');
 });
 
 document.addEventListener("keydown", (e) => {
@@ -151,11 +105,8 @@ document.addEventListener("keydown", (e) => {
         }
 
         clickedKeyKeyboard.push(key);
-
         someKeyIsPressed = true;
-
         playKey(key);
-
         socket.emit('keypressedKeyboard', room, clickedKeyKeyboard);
 
     } else if (activateDrums) {
@@ -169,10 +120,7 @@ document.addEventListener("keydown", (e) => {
         audio.currentTime = 0;
         audio.play();
         key.classList.add('playing');
-
-        clickedKeyDrums.push(key.querySelector('div').innerHTML);
-        socket.emit('keypressedDrums', room, clickedKeyDrums);
-        clickedKeyDrums = [];
+        socket.emit('keypressedDrums', room, e.keyCode);
 
     }
 });
@@ -203,8 +151,6 @@ document.addEventListener("mouseup", () => {
 });
 
 $("#takeSpotlight").click(function () {
-    
-
     $.get("/broadcast.html", {
             room: room
         })
@@ -224,7 +170,6 @@ $("#takeSpotlight").click(function () {
 
 
 $("#leaveSpotlight").click(function () {
-
     if (window.stream) {
         window.stream.getTracks().forEach(track => {
             track.enabled = false;
@@ -235,7 +180,6 @@ $("#leaveSpotlight").click(function () {
 });
 
 setTimeout(function () {
-
     $.get("/watch.html", {
             room: room
         })
@@ -246,8 +190,6 @@ setTimeout(function () {
 }, 250);
 
 socket.on('refreshStream', function (broadcaster) {
-    //console.log("New Broadcaster detected -> restart stream");
-
     if (window.stream) {
         window.stream.getTracks().forEach(track => {
             track.enabled = false;
@@ -264,7 +206,6 @@ socket.on('refreshStream', function (broadcaster) {
                 $("#currentBroadcaster").html(broadcaster);
             });
     }, 4000);
-
 });
 
 socket.on('resetStream', function () {

@@ -87,7 +87,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('keyboard', function (room, blob) {
-        // can choose to broadcast it to whoever you want
         socket.broadcast.to(room).emit('keyboardSound', blob);
     });
 
@@ -96,31 +95,23 @@ io.on('connection', (socket) => {
     });
 
     socket.on('releasedKeyKeyboard', (room, key) => {
-
         socket.broadcast.to(room).emit('keyboardReleasedKey', key);
     });
 
     socket.on('keypressedDrums', (room, clickedKeyDrums) => {
-
         socket.broadcast.to(room).emit('drumKey', clickedKeyDrums);
     });
 
     socket.on("broadcaster", (room, broadcaster) => {
         broadcasterMap.set(room, socket.id);
         broadcasterMapName.set(room, broadcaster);
-        console.log(broadcasterMapName);
-        console.log(broadcasterMap);
-        console.log(broadcasterMapName.get(room) + " started a broadcast in room " + room);
         socket.broadcast.to(room).emit("broadcaster");
-        socket.emit("broadcaster", socket.id);
     });
 
     socket.on("watcher", (room) => {
         if (broadcasterMap.get(room) != undefined) {
-            console.log("new Watcher sees: " + broadcasterMapName.get(room) + " in room " + room);
             socket.to(room).to(broadcasterMap.get(room)).emit("watcher", socket.id);
         }
-        socket.emit("watcher", socket.id);
     });
 
     socket.on("disconnectPeer", (room) => {

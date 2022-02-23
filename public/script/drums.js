@@ -94,10 +94,6 @@ for (const [key, {
     audio.currentTime = 0;
     audio.play();
     key.classList.add('playing');
-
-    clickedKeyDrums.push(key.querySelector('div').innerHTML);
-    socket.emit('keypressedDrums', room, clickedKeyDrums);
-    clickedKeyDrums = [];
-
+    socket.emit('keypressedDrums', room, keyCode);
   });
 }
